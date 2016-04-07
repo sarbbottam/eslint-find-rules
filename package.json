@@ -11,9 +11,10 @@
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
     "validate": "npm-run-all --parallel lint cover --sequential check-coverage",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
-    "report-coverage": "cat ./coverage/lcov.info | node_modules/.bin/codecov"
+    "report-coverage": "cat ./coverage/lcov.info | node_modules/.bin/codecov",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "travis-after-all": "travis-after-all && npm run report-coverage"
   },
   "bin": {
     "eslint-rule-finder": "src/bin.js"
@@ -42,6 +43,7 @@
     "opt-cli": "^1.1.1",
     "proxyquire": "1.7.4",
     "semantic-release": "4.3.5",
+    "travis-after-all": "^1.4.4",
     "validate-commit-msg": "2.4.0",
     "yargs": "^4.4.0"
   },
