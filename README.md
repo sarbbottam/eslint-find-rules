@@ -1,5 +1,7 @@
 # eslint-find-new-rules
 
+[![Join the chat at https://gitter.im/sarbbottam/eslint-rule-finder](https://badges.gitter.im/sarbbottam/eslint-rule-finder.svg)](https://gitter.im/sarbbottam/eslint-rule-finder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Use this for your own [ESLint](http://eslint.org/) [shareable configuration](http://eslint.org/docs/developer-guide/shareable-configs)
 to identify built-in ESLint rules that you're not explicitly configuring.
 
