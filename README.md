@@ -1,5 +1,7 @@
 # eslint-find-rules
 
+[![Join the chat at https://gitter.im/sarbbottam/eslint-find-rules](https://badges.gitter.im/sarbbottam/eslint-find-rules.svg)](https://gitter.im/sarbbottam/eslint-find-rules?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Use this for your own [ESLint](http://eslint.org/) [shareable configuration](http://eslint.org/docs/developer-guide/shareable-configs)
 to list current configured rules, all-available rules, unused rules, and plugin rules.
 
