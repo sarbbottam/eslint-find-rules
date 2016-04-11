@@ -1,5 +1,5 @@
 {
-  "name": "eslint-rule-finder",
+  "name": "eslint-find-rules",
   "version": "0.0.0-semantically-released",
   "description": "Find built-in ESLint rules you don't have in your custom config.",
   "main": "src/rule-finder.js",
@@ -17,7 +17,7 @@
     "travis-after-all": "travis-after-all && npm run report-coverage"
   },
   "bin": {
-    "eslint-rule-finder": "src/bin.js"
+    "eslint-find-rules": "src/bin.js"
   },
   "keywords": [],
   "author": "Michał Gołębiowski <m.goleb@gmail.com>",
@@ -77,10 +77,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sarbbottam/eslint-rule-finder.git"
+    "url": "https://github.com/sarbbottam/eslint-find-rules.git"
   },
   "bugs": {
-    "url": "https://github.com/sarbbottam/eslint-rule-finder/issues"
+    "url": "https://github.com/sarbbottam/eslint-find-rules/issues"
   },
-  "homepage": "https://github.com/sarbbottam/eslint-rule-finder#readme"
+  "homepage": "https://github.com/sarbbottam/eslint-find-rules#readme"
 }

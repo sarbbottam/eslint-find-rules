@@ -1,15 +1,13 @@
-# eslint-rule-finder
-
-[![Join the chat at https://gitter.im/sarbbottam/eslint-rule-finder](https://badges.gitter.im/sarbbottam/eslint-rule-finder.svg)](https://gitter.im/sarbbottam/eslint-rule-finder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# eslint-find-rules
 
 Use this for your own [ESLint](http://eslint.org/) [shareable configuration](http://eslint.org/docs/developer-guide/shareable-configs)
 to list current configured rules, all-available rules, unused rules, and plugin rules.
 
-[![Build Status](https://img.shields.io/travis/sarbbottam/eslint-rule-finder.svg?style=flat-square)](https://travis-ci.org/sarbbottam/eslint-rule-finder)
-[![Code Coverage](https://img.shields.io/codecov/c/github/sarbbottam/eslint-rule-finder.svg?style=flat-square)](https://codecov.io/github/sarbbottam/eslint-rule-finder)
-[![version](https://img.shields.io/npm/v/eslint-rule-finder.svg?style=flat-square)](http://npm.im/eslint-rule-finder)
-[![downloads](https://img.shields.io/npm/dm/eslint-rule-finder.svg?style=flat-square)](http://npm-stat.com/charts.html?package=eslint-rule-finder&from=2015-08-01)
-[![MIT License](https://img.shields.io/npm/l/eslint-rule-finder.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/travis/sarbbottam/eslint-find-rules.svg?style=flat-square)](https://travis-ci.org/sarbbottam/eslint-find-rules)
+[![Code Coverage](https://img.shields.io/codecov/c/github/sarbbottam/eslint-find-rules.svg?style=flat-square)](https://codecov.io/github/sarbbottam/eslint-find-rules)
+[![version](https://img.shields.io/npm/v/eslint-find-rules.svg?style=flat-square)](http://npm.im/eslint-find-rules)
+[![downloads](https://img.shields.io/npm/dm/eslint-find-rules.svg?style=flat-square)](http://npm-stat.com/charts.html?package=eslint-find-rules&from=2015-08-01)
+[![MIT License](https://img.shields.io/npm/l/eslint-find-rules.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors)
 
@@ -22,7 +20,7 @@ This module is an extended version of [eslint-find-new-rules](https://github.com
 Simply install locally as a development dependency to your project's package:
 
 ```
-npm install --save-dev eslint-rule-finder
+npm install --save-dev eslint-find-rules
 ```
 
 ## Usage
@@ -33,7 +31,7 @@ The intended usage is as an npm script:
 {
   ...
   "scripts": {
-    "eslint-find-option-rules": "eslint-rule-finder [option] <file>"
+    "eslint-find-option-rules": "eslint-find-rules [option] <file>"
   }
   ...
 }
@@ -50,7 +48,7 @@ This is really handy in an actual config module (like [eslint-config-kentcdodds]
 
 ```
 // available options are -c|--current, -a|--all-available, -p|--plugin, -u|--unused
-eslint-rule-finder --option ./index.js
+eslint-find-rules --option ./index.js
 ```
 
 This is resolved, relative to the `process.cwd()` which, in the context of `npm` scripts is always the location of your `package.json`.
@@ -62,7 +60,7 @@ You may specify any [config format supported by ESLint](http://eslint.org/docs/u
 You can also provide an absolute path:
 
 ```
-eslint-rule-finder --option ~/Developer/eslint-config-kentcdodds/index.js
+eslint-find-rules --option ~/Developer/eslint-config-kentcdodds/index.js
 ```
 
 **Please note** that any tested ESLint config file must reside below your project's root.
@@ -72,13 +70,13 @@ eslint-rule-finder --option ~/Developer/eslint-config-kentcdodds/index.js
 It will also default to the `main` in your `package.json`, so you can omit the `path/to/file` argument:
 
 ```
-eslint-rule-finder --option
+eslint-find-rules --option
 ```
 
 ### As a `require`d module
 
 ```
-var getRuleFinder = require('./eslint-rule-finder')
+var getRuleFinder = require('./eslint-find-rules')
 var ruleFinder = getRuleFinder('path/to/eslint-config')
 
 // default to the `main` in your `package.json`
