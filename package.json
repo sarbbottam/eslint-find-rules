@@ -44,6 +44,7 @@
     "opt-cli": "^1.1.1",
     "proxyquire": "1.7.4",
     "semantic-release": "4.3.5",
+    "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
     "validate-commit-msg": "2.4.0"
   },
@@ -60,7 +61,8 @@
     },
     "rules": {
       "no-var": 0,
-      "func-names": 0
+      "func-names": 0,
+      "object-shorthand": 0
     }
   },
   "nyc": {
