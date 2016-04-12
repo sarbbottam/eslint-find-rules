@@ -3,7 +3,7 @@ var fs = require('fs')
 
 var eslint = require('eslint')
 var isAbsolute = require('path-is-absolute')
-var difference = require('lodash.difference')
+var difference = require('./difference')
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
