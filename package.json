@@ -7,7 +7,6 @@
     "cover": "nyc --reporter=lcov --reporter=text ava",
     "test": "ava",
     "lint": "eslint --ignore-pattern test/fixtures .",
-    "check-kentcdodds": "./bin.js eslint-config-kentcdodds",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
     "validate": "npm-run-all --parallel lint cover --sequential check-coverage",
