@@ -4,8 +4,8 @@
   "description": "Find built-in ESLint rules you don't have in your custom config.",
   "main": "src/rule-finder.js",
   "scripts": {
-    "cover": "nyc --reporter=lcov --reporter=text ava",
-    "test": "ava",
+    "cover": "nyc --reporter=lcov --reporter=text mocha",
+    "test": "mocha",
     "lint": "eslint --ignore-pattern test/fixtures .",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
@@ -27,25 +27,25 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "path-is-absolute": "1.0.0"
+    "path-is-absolute": "1.0.0",
+    "yargs": "^4.4.0"
   },
   "devDependencies": {
     "all-contributors-cli": "2.0.0-beta6",
-    "ava": "0.13.0",
     "codecov": "1.0.1",
     "commitizen": "2.7.2",
     "cz-conventional-changelog": "1.1.5",
     "eslint": "2.4.0",
     "eslint-config-kentcdodds": "6.0.0",
     "ghooks": "1.0.3",
+    "mocha": "^2.4.5",
     "npm-run-all": "1.5.3",
     "nyc": "6.1.1",
     "opt-cli": "^1.1.1",
     "proxyquire": "1.7.4",
     "semantic-release": "4.3.5",
     "travis-after-all": "^1.4.4",
-    "validate-commit-msg": "2.4.0",
-    "yargs": "^4.4.0"
+    "validate-commit-msg": "2.4.0"
   },
   "peerDependencies": {
     "eslint": "^2.0.0"
@@ -55,8 +55,12 @@
     "parserOptions": {
       "ecmaVersion": 5
     },
+    "env": {
+      "mocha": true
+    },
     "rules": {
-      "no-var": 0
+      "no-var": 0,
+      "func-names": 0
     }
   },
   "nyc": {

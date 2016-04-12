@@ -1,13 +1,14 @@
-import path from 'path'
+var path = require('path')
+var assert = require('assert')
+var proxyquire = require('proxyquire')
 
-import test from 'ava'
-import proxyquire from 'proxyquire'
+var processCwd = process.cwd
 
-const processCwd = process.cwd
-
-const getRuleFinder = proxyquire('../src/rule-finder', {
+var getRuleFinder = proxyquire('../src/rule-finder', {
   fs: {
-    readdirSync: () => ['foo-rule.js', 'bar-rule.js', 'baz-rule.js'],
+    readdirSync: function() {
+      return ['foo-rule.js', 'bar-rule.js', 'baz-rule.js']
+    },
   },
   'eslint-plugin-react': {
     rules: {
@@ -20,80 +21,94 @@ const getRuleFinder = proxyquire('../src/rule-finder', {
   },
 })
 
-const noSpecifiedFile = path.resolve(process.cwd(), './fixtures/no-path')
-const specifiedFileRelative = './fixtures/eslint.json'
-const specifiedFileAbsolute = path.join(process.cwd(), specifiedFileRelative)
+var noSpecifiedFile = path.resolve(process.cwd(), './test/fixtures/no-path')
+var specifiedFileRelative = './test/fixtures/eslint.json'
+var specifiedFileAbsolute = path.join(process.cwd(), specifiedFileRelative)
 
-test.afterEach(() => {
-  process.cwd = processCwd
-})
+describe('rule-finder', function() {
+  afterEach(function() {
+    process.cwd = processCwd
+  })
 
-test('no specifiedFile is passed to the constructor', (t) => {
-  process.cwd = () => noSpecifiedFile
-  const ruleFinder = getRuleFinder()
-  t.same(ruleFinder.getUnusedRules(), ['bar-rule', 'baz-rule'])
-})
+  it('no specifiedFile is passed to the constructor', function() {
+    var ruleFinder
+    process.cwd = function() {
+      return noSpecifiedFile
+    }
+    ruleFinder = getRuleFinder()
+    assert.deepEqual(ruleFinder.getUnusedRules(), ['bar-rule', 'baz-rule'])
+  })
 
-test('no specifiedFile - curent rules', (t) => {
-  process.cwd = () => noSpecifiedFile
-  const ruleFinder = getRuleFinder()
-  t.same(ruleFinder.getCurrentRules(), ['foo-rule'])
-})
+  it('no specifiedFile - curent rules', function() {
+    var ruleFinder
+    process.cwd = function() {
+      return noSpecifiedFile
+    }
+    ruleFinder = getRuleFinder()
+    assert.deepEqual(ruleFinder.getCurrentRules(), ['foo-rule'])
+  })
 
-test('no specifiedFile - plugin rules', (t) => {
-  process.cwd = () => noSpecifiedFile
-  const ruleFinder = getRuleFinder()
-  t.same(ruleFinder.getPluginRules(), [])
-})
+  it('no specifiedFile - plugin rules', function() {
+    var ruleFinder
+    process.cwd = function() {
+      return noSpecifiedFile
+    }
+    ruleFinder = getRuleFinder()
+    assert.deepEqual(ruleFinder.getPluginRules(), [])
+  })
 
-test('no specifiedFile - all available rules', (t) => {
-  process.cwd = () => noSpecifiedFile
-  const ruleFinder = getRuleFinder()
-  t.same(ruleFinder.getAllAvailableRules(), ['foo-rule', 'bar-rule', 'baz-rule'])
-})
+  it('no specifiedFile - all available rules', function() {
+    var ruleFinder
+    process.cwd = function() {
+      return noSpecifiedFile
+    }
+    ruleFinder = getRuleFinder()
+    assert.deepEqual(ruleFinder.getAllAvailableRules(), ['foo-rule', 'bar-rule', 'baz-rule'])
+  })
 
-test('specifiedFile (relative path) is passed to the constructor', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileRelative)
-  t.same(ruleFinder.getUnusedRules(), ['baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
-})
+  it('specifiedFile (relative path) is passed to the constructor', function() {
+    var ruleFinder = getRuleFinder(specifiedFileRelative)
+    assert.deepEqual(ruleFinder.getUnusedRules(), ['baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
+  })
 
-test('specifiedFile (relative path) - curent rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileRelative)
-  t.same(ruleFinder.getCurrentRules(), ['foo-rule', 'bar-rule'])
-})
+  it('specifiedFile (relative path) - curent rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileRelative)
+    assert.deepEqual(ruleFinder.getCurrentRules(), ['foo-rule', 'bar-rule'])
+  })
 
-test('specifiedFile (relative path) - plugin rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileRelative)
-  t.same(ruleFinder.getPluginRules(), ['react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
-})
+  it('specifiedFile (relative path) - plugin rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileRelative)
+    assert.deepEqual(ruleFinder.getPluginRules(), ['react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
+  })
 
-test('specifiedFile (relative path) - all available rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileRelative)
-  t.same(
-    ruleFinder.getAllAvailableRules(),
-    ['foo-rule', 'bar-rule', 'baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule']
-  )
-})
+  it('specifiedFile (relative path) - all available rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileRelative)
+    assert.deepEqual(
+      ruleFinder.getAllAvailableRules(),
+      ['foo-rule', 'bar-rule', 'baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule']
+    )
+  })
 
-test('specifiedFile (absolut path) is passed to the constructor', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileAbsolute)
-  t.same(ruleFinder.getUnusedRules(), ['baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
-})
+  it('specifiedFile (absolut path) is passed to the constructor', function() {
+    var ruleFinder = getRuleFinder(specifiedFileAbsolute)
+    assert.deepEqual(ruleFinder.getUnusedRules(), ['baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
+  })
 
-test('specifiedFile (absolut path) - curent rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileAbsolute)
-  t.same(ruleFinder.getCurrentRules(), ['foo-rule', 'bar-rule'])
-})
+  it('specifiedFile (absolut path) - curent rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileAbsolute)
+    assert.deepEqual(ruleFinder.getCurrentRules(), ['foo-rule', 'bar-rule'])
+  })
 
-test('specifiedFile (absolut path) - plugin rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileAbsolute)
-  t.same(ruleFinder.getPluginRules(), ['react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
-})
+  it('specifiedFile (absolut path) - plugin rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileAbsolute)
+    assert.deepEqual(ruleFinder.getPluginRules(), ['react/foo-rule', 'react/bar-rule', 'react/baz-rule'])
+  })
 
-test('specifiedFile (absolut path) - all available rules', (t) => {
-  const ruleFinder = getRuleFinder(specifiedFileAbsolute)
-  t.same(
-    ruleFinder.getAllAvailableRules(),
-    ['foo-rule', 'bar-rule', 'baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule']
-  )
+  it('specifiedFile (absolut path) - all available rules', function() {
+    var ruleFinder = getRuleFinder(specifiedFileAbsolute)
+    assert.deepEqual(
+      ruleFinder.getAllAvailableRules(),
+      ['foo-rule', 'bar-rule', 'baz-rule', 'react/foo-rule', 'react/bar-rule', 'react/baz-rule']
+    )
+  })
 })

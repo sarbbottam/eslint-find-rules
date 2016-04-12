@@ -1,23 +1,25 @@
-import test from 'ava'
+var assert = require('assert')
+var difference = require('../src/difference')
 
-import difference from '../src/difference'
+describe('difference', function() {
+  it('should return difference', function() {
+    assert.deepEqual(
+      difference(['a', 'b', 'c'], ['x', 'y', 'z']),
+      ['a', 'b', 'c']
+    )
+    assert.deepEqual(
+      difference(['a', 'b', 'c'], ['a', 'y', 'z']),
+      ['b', 'c']
+    )
+    assert.deepEqual(
+      difference(['a', 'b', 'c'], ['a', 'b', 'z']),
+      ['c']
+    )
 
-test('should return difference', (t) => {
-  t.same(
-    difference(['a', 'b', 'c'], ['x', 'y', 'z']),
-    ['a', 'b', 'c']
-  )
-  t.same(
-    difference(['a', 'b', 'c'], ['a', 'y', 'z']),
-    ['b', 'c']
-  )
-  t.same(
-    difference(['a', 'b', 'c'], ['a', 'b', 'z']),
-    ['c']
-  )
-
-  t.same(
-    difference(['a', 'b', 'c'], ['a', 'b', 'c']),
-    []
-  )
+    assert.deepEqual(
+      difference(['a', 'b', 'c'], ['a', 'b', 'c']),
+      []
+    )
+  })
 })
+
