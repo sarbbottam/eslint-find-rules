@@ -4,6 +4,24 @@
   "imageSize": 100,
   "contributors": [
     {
+      "login": "sarbbottam",
+      "name": "Sarbbottam Bandyopadhyay",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/949380?v=3",
+      "profile": "https://twitter.com/sarbbottam",
+      "contributions": [
+        "code", "doc", "test", "review"
+      ]
+    },
+    {
+      "login": "ta2edchimp",
+      "name": "Andreas Windt",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/262436?v=3",
+      "profile": "https://twitter.com/ta2edchimp",
+      "contributions": [
+        "code", "doc", "test", "review"
+      ]
+    },
+    {
       "login": "kentcdodds",
       "name": "Kent C. Dodds",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1500684?v=3",
@@ -19,24 +37,6 @@
       "profile": "https://github.com/mgol",
       "contributions": [
         "code"
-      ]
-    },
-    {
-      "login": "sarbbottam",
-      "name": "Sarbbottam Bandyopadhyay",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/949380?v=3",
-      "profile": "https://twitter.com/sarbbottam",
-      "contributions": [
-        "test", "review"
-      ]
-    },
-    {
-      "login": "ta2edchimp",
-      "name": "Andreas Windt",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/262436?v=3",
-      "profile": "https://twitter.com/ta2edchimp",
-      "contributions": [
-        "code", "doc", "test"
       ]
     },
     {
