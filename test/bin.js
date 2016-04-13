@@ -3,6 +3,7 @@ var proxyquire = require('proxyquire')
 var sinon = require('sinon')
 
 var consoleLog = console.log // eslint-disable-line no-console
+var processExit = process.exit
 
 var getCurrentRules = sinon.stub().returns(['current'])
 var getPluginRules = sinon.stub().returns(['plugin'])
@@ -28,11 +29,13 @@ describe('bin', function() {
       }
       consoleLog.apply(null, arguments)
     }
+    process.exit = function noop() {}
     process.argv = process.argv.slice(0, 2)
   })
 
   afterEach(function() {
     console.log = consoleLog // eslint-disable-line no-console
+    process.exit = processExit
     // purge yargs cache
     delete require.cache[require.resolve('yargs')]
   })
@@ -56,7 +59,20 @@ describe('bin', function() {
   })
 
   it('option -u|--unused', function() {
+    process.exit = function(status) {
+      assert.equal(status, 1)
+    }
     process.argv[2] = '-u'
+    proxyquire('../src/bin', stub)
+    assert.ok(getUnusedRules.called)
+  })
+
+  it('option -u|--unused along with -n|no-error', function() {
+    process.exit = function(status) {
+      assert.equal(status, 0)
+    }
+    process.argv[2] = '-u'
+    process.argv[3] = '-n'
     proxyquire('../src/bin', stub)
     assert.ok(getUnusedRules.called)
   })

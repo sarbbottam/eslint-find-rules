@@ -33,7 +33,7 @@ The intended usage is as an npm script:
 {
   ...
   "scripts": {
-    "eslint-find-option-rules": "eslint-find-rules [option] <file>"
+    "eslint-find-option-rules": "eslint-find-rules [option] <file> [flag]"
   }
   ...
 }
@@ -41,7 +41,12 @@ The intended usage is as an npm script:
 
 ```
 available options are -c|--current, -a|--all-available, -p|--plugin, -u|--unused
+available flag is -n|--no-error
 ```
+
+By default it will error out only for `-u|--unused`,
+however if you do not want the `process` to `exit` with a `non-zero` exit code, use the `-n|--no-error` along with `-u|--unused`
+
 Then run it with: `$ npm run eslint-find-option-rules -s` (the `-s` is to silence npm output).
 
 ### Specify a file
