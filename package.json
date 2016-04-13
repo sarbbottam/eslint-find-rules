@@ -13,7 +13,7 @@
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
     "report-coverage": "cat ./coverage/lcov.info | node_modules/.bin/codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "travis-after-all": "travis-after-all && npm run report-coverage"
+    "travis-after-all": "travis-after-all && (npm run report-coverage & npm run semantic-release)"
   },
   "bin": {
     "eslint-find-rules": "src/bin.js"
