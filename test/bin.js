@@ -67,6 +67,16 @@ describe('bin', function() {
     assert.ok(getUnusedRules.called)
   })
 
+  it('options -u|--unused and no unused rules found', function() {
+    getUnusedRules.returns([])
+    process.exit = function(status) {
+      assert.equal(status, 0)
+    }
+    process.argv[2] = '-u'
+    proxyquire('../src/bin', stub)
+    assert.ok(getUnusedRules.called)
+  })
+
   it('option -u|--unused along with -n|no-error', function() {
     process.exit = function(status) {
       assert.equal(status, 0)

@@ -29,6 +29,8 @@ Object.keys(options).forEach(function findRules(option) {
     if (rules.length) {
       console.log('\n' + options[option][0], 'rules\n') // eslint-disable-line no-console
       console.log(rules.join(', ')) // eslint-disable-line no-console
+    } else if (option === 'getUnusedRules') {
+      processExitCode = 0
     }
   }
 })
