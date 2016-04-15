@@ -101,6 +101,18 @@ ruleFinder.getAllAvailableRules()
 ruleFinder.getUnusedRules()
 ```
 
+### Log the difference between two config files
+
+```javascript
+{
+  ...
+  "scripts": {
+    "eslint-diff-rules": "eslint-diff-rules <file1> <file2>"
+  }
+  ...
+}
+```
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
