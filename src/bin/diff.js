@@ -3,7 +3,7 @@
 'use strict'
 
 var getRuleFinder = require('../lib/rule-finder')
-var difference = require('../lib/difference')
+var difference = require('../lib/array-diff')
 
 var rules = difference(
   getRuleFinder(process.argv[2]).getCurrentRules(),

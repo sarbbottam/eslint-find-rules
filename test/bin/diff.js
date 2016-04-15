@@ -12,7 +12,7 @@ var stub = {
       getCurrentRules: function noop() {},
     }
   },
-  '../lib/difference': difference,
+  '../lib/array-diff': difference,
 }
 
 describe('diff', function() {

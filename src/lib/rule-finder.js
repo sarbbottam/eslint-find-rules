@@ -3,7 +3,7 @@ var fs = require('fs')
 
 var eslint = require('eslint')
 var isAbsolute = require('path-is-absolute')
-var difference = require('./difference')
+var difference = require('./array-diff')
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
