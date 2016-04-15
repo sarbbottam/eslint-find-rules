@@ -4,7 +4,7 @@ var proxyquire = require('proxyquire')
 
 var processCwd = process.cwd
 
-var getRuleFinder = proxyquire('../src/rule-finder', {
+var getRuleFinder = proxyquire('../../src/lib/rule-finder', {
   fs: {
     readdirSync: function() {
       return ['foo-rule.js', 'bar-rule.js', 'baz-rule.js']

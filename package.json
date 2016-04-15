@@ -2,10 +2,10 @@
   "name": "eslint-find-rules",
   "version": "0.0.0-semantically-released",
   "description": "Find built-in ESLint rules you don't have in your custom config.",
-  "main": "src/rule-finder.js",
+  "main": "src/lib/rule-finder.js",
   "scripts": {
-    "cover": "nyc --reporter=lcov --reporter=text mocha",
-    "test": "mocha",
+    "cover": "nyc --reporter=lcov --reporter=text npm test",
+    "test": "mocha --recursive",
     "lint": "eslint --ignore-pattern test/fixtures .",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
@@ -16,8 +16,8 @@
     "travis-after-all": "travis-after-all && (npm run report-coverage & npm run semantic-release)"
   },
   "bin": {
-    "eslint-find-rules": "src/find.js",
-    "eslint-diff-rules": "src/diff.js"
+    "eslint-find-rules": "src/bin/find.js",
+    "eslint-diff-rules": "src/bin/diff.js"
   },
   "keywords": [],
   "author": "Michał Gołębiowski <m.goleb@gmail.com>",

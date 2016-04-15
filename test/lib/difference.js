@@ -1,5 +1,5 @@
 var assert = require('assert')
-var difference = require('../src/difference')
+var difference = require('../../src/lib/difference')
 
 describe('difference', function() {
   it('should return difference', function() {

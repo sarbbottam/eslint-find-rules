@@ -16,7 +16,7 @@ var argv = require('yargs')
   .argv
 
 var processExitCode = argv.u && !argv.n ? 1 : 0
-var getRuleFinder = require('./rule-finder')
+var getRuleFinder = require('../lib/rule-finder')
 var specifiedFile = argv._[0]
 
 var ruleFinder = getRuleFinder(specifiedFile)

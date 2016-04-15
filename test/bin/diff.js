@@ -7,12 +7,12 @@ var consoleLog = console.log // eslint-disable-line no-console
 var difference = sinon.stub().returns(['diff'])
 
 var stub = {
-  './rule-finder': function() {
+  '../lib/rule-finder': function() {
     return {
       getCurrentRules: function noop() {},
     }
   },
-  './difference': difference,
+  '../lib/difference': difference,
 }
 
 describe('diff', function() {
@@ -34,7 +34,7 @@ describe('diff', function() {
       }
       consoleLog.apply(null, arguments)
     }
-    proxyquire('../src/diff', stub)
+    proxyquire('../../src/bin/diff', stub)
     assert.ok(difference.called)
   })
 })
