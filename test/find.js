@@ -42,19 +42,19 @@ describe('bin', function() {
 
   it('option -c|--current', function() {
     process.argv[2] = '-c'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getCurrentRules.called)
   })
 
   it('option -p|--plugin', function() {
     process.argv[2] = '-p'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getPluginRules.called)
   })
 
   it('option -a|--all-available', function() {
     process.argv[2] = '-a'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getAllAvailableRules.called)
   })
 
@@ -63,7 +63,7 @@ describe('bin', function() {
       assert.equal(status, 1)
     }
     process.argv[2] = '-u'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getUnusedRules.called)
   })
 
@@ -73,7 +73,7 @@ describe('bin', function() {
       assert.equal(status, 0)
     }
     process.argv[2] = '-u'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getUnusedRules.called)
   })
 
@@ -83,7 +83,7 @@ describe('bin', function() {
     }
     process.argv[2] = '-u'
     process.argv[3] = '-n'
-    proxyquire('../src/bin', stub)
+    proxyquire('../src/find', stub)
     assert.ok(getUnusedRules.called)
   })
 })

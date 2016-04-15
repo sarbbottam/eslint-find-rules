@@ -16,7 +16,7 @@
     "travis-after-all": "travis-after-all && (npm run report-coverage & npm run semantic-release)"
   },
   "bin": {
-    "eslint-find-rules": "src/bin.js",
+    "eslint-find-rules": "src/find.js",
     "eslint-diff-rules": "src/diff.js"
   },
   "keywords": [],
