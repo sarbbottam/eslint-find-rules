@@ -38,7 +38,7 @@
     "codecov": "1.0.1",
     "commitizen": "2.7.6",
     "cz-conventional-changelog": "1.1.5",
-    "eslint": "2.7.0",
+    "eslint": "2.8.0",
     "eslint-config-kentcdodds": "6.1.1",
     "ghooks": "1.2.0",
     "mocha": "^2.4.5",
