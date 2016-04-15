@@ -28,7 +28,9 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "cliui": "^3.2.0",
     "path-is-absolute": "1.0.0",
+    "window-size": "^0.2.0",
     "yargs": "^4.4.0"
   },
   "devDependencies": {
