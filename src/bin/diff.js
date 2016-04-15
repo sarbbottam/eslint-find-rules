@@ -4,10 +4,13 @@
 
 var getRuleFinder = require('../lib/rule-finder')
 var difference = require('../lib/array-diff')
+var sortRules = require('../lib/sort-rules')
 
-var rules = difference(
-  getRuleFinder(process.argv[2]).getCurrentRules(),
-  getRuleFinder(process.argv[3]).getCurrentRules()
+var rules = sortRules(
+  difference(
+    getRuleFinder(process.argv[2]).getCurrentRules(),
+    getRuleFinder(process.argv[3]).getCurrentRules()
+  )
 )
 
 /* istanbul ignore next */
