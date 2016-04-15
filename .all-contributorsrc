@@ -47,6 +47,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "dustinspecker",
+      "name": "Dustin Specker",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2449282?v=3",
+      "profile": "https://github.com/dustinspecker",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
