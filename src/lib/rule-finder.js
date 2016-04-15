@@ -4,7 +4,7 @@ var fs = require('fs')
 var eslint = require('eslint')
 var isAbsolute = require('path-is-absolute')
 var difference = require('./array-diff')
-var sortRules = require('./sort-rules')
+var getSortedRules = require('./sort-rules')
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
@@ -72,21 +72,21 @@ function RuleFinder(specifiedFile) {
 
   // get all the current rules instead of referring the extended files or documentation
   this.getCurrentRules = function getCurrentRules() {
-    return sortRules(currentRules)
+    return getSortedRules(currentRules)
   }
 
   // get all the plugin rules instead of referring the extended files or documentation
   this.getPluginRules = function getPluginRules() {
-    return sortRules(pluginRules)
+    return getSortedRules(pluginRules)
   }
 
   // get all the available rules instead of referring eslint and plugin packages or documentation
   this.getAllAvailableRules = function getAllAvailableRules() {
-    return sortRules(allRules)
+    return getSortedRules(allRules)
   }
 
   this.getUnusedRules = function getUnusedRules() {
-    return sortRules(unusedRules)
+    return getSortedRules(unusedRules)
   }
 
 }

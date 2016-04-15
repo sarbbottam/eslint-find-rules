@@ -8,9 +8,9 @@ var ui = require('cliui')({width: availableWidth})
 
 var getRuleFinder = require('../lib/rule-finder')
 var difference = require('../lib/array-diff')
-var sortRules = require('../lib/sort-rules')
+var getSortedRules = require('../lib/sort-rules')
 
-var rules = sortRules(
+var rules = getSortedRules(
   difference(
     getRuleFinder(process.argv[2]).getCurrentRules(),
     getRuleFinder(process.argv[3]).getCurrentRules()
