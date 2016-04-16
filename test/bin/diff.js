@@ -4,15 +4,18 @@ var sinon = require('sinon')
 
 var consoleLog = console.log // eslint-disable-line no-console
 
-var difference = sinon.stub().returns(['diff'])
+var arrayDifference = sinon.stub().returns(['diff'])
+var objectDifference = sinon.stub().returns(['diff'])
 
 var stub = {
   '../lib/rule-finder': function() {
     return {
       getCurrentRules: function noop() {},
+      getCurrentRulesDetailed: function noop() {},
     }
   },
-  '../lib/array-diff': difference,
+  '../lib/array-diff': arrayDifference,
+  '../lib/object-diff': objectDifference,
 }
 
 describe('diff', function() {
@@ -23,6 +26,8 @@ describe('diff', function() {
 
   afterEach(function() {
     console.log = consoleLog // eslint-disable-line no-console
+    // purge yargs cache
+    delete require.cache[require.resolve('yargs')]
   })
 
   it('log diff', function() {
@@ -35,6 +40,20 @@ describe('diff', function() {
       consoleLog.apply(null, arguments)
     }
     proxyquire('../../src/bin/diff', stub)
-    assert.ok(difference.called)
+    assert.ok(arrayDifference.called)
+  })
+
+  it('verbose log diff', function() {
+    process.argv[2] = './foo'
+    process.argv[3] = './bar'
+    process.argv[4] = '-v'
+    console.log = function() { // eslint-disable-line no-console
+      if (arguments[0].match(/(diff)/)) {
+        return
+      }
+      consoleLog.apply(null, arguments)
+    }
+    proxyquire('../../src/bin/diff', stub)
+    assert.ok(objectDifference.called)
   })
 })

@@ -16,4 +16,15 @@ describe('sort-rules', function() {
       ['a', 'aa', 'ab', 'b', 'c']
     )
   })
+
+  it('should return sorted rule configs', function() {
+    assert.deepEqual(
+      sortRules([['a', ['b', 'c'], ['d', 'e']], ['b', ['c', 'd'], ['e', 'f']]]),
+      [['a', ['b', 'c'], ['d', 'e']], ['b', ['c', 'd'], ['e', 'f']]]
+    )
+    assert.deepEqual(
+      sortRules([['c', ['d', 'e'], ['f', 'g']], ['b', ['c'], 'd'], ['a', ['b', 'c'], undefined]]),
+      [['a', ['b', 'c'], undefined], ['b', ['c'], 'd'], ['c', ['d', 'e'], ['f', 'g']]]
+    )
+  })
 })
