@@ -5,15 +5,15 @@ describe('difference', function() {
   it('should return difference', function() {
     assert.deepEqual(
       difference(['a', 'b', 'c'], ['x', 'y', 'z']),
-      ['a', 'b', 'c']
+      ['a', 'b', 'c', 'x', 'y', 'z']
     )
     assert.deepEqual(
       difference(['a', 'b', 'c'], ['a', 'y', 'z']),
-      ['b', 'c']
+      ['b', 'c', 'y', 'z']
     )
     assert.deepEqual(
       difference(['a', 'b', 'c'], ['a', 'b', 'z']),
-      ['c']
+      ['c', 'z']
     )
 
     assert.deepEqual(
@@ -22,4 +22,3 @@ describe('difference', function() {
     )
   })
 })
-
