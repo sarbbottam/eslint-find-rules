@@ -1,7 +1,7 @@
 var assert = require('assert')
 var difference = require('../../src/lib/array-diff')
 
-describe('difference', function() {
+describe('array difference', function() {
   it('should return difference', function() {
     assert.deepEqual(
       difference(['a', 'b', 'c'], ['x', 'y', 'z']),
@@ -22,4 +22,3 @@ describe('difference', function() {
     )
   })
 })
-

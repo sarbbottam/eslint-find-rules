@@ -75,6 +75,11 @@ function RuleFinder(specifiedFile) {
     return getSortedRules(currentRules)
   }
 
+  // get all the current rules' particular configuration
+  this.getCurrentRulesDetailed = function getCurrentRulesDetailed() {
+    return config.rules
+  }
+
   // get all the plugin rules instead of referring the extended files or documentation
   this.getPluginRules = function getPluginRules() {
     return getSortedRules(pluginRules)

@@ -7,6 +7,7 @@ var options = {
   getPluginRules: ['plugin', 'p'],
   getAllAvailableRules: ['all-available', 'a'],
   getUnusedRules: ['unused', 'u'],
+  verbose: ['verbose', 'v'],
   n: ['no-error'],
 }
 
@@ -32,9 +33,12 @@ Object.keys(options).forEach(function findRules(option) {
   var ruleFinderMethod = ruleFinder[option]
   if (argv[option] && ruleFinderMethod) {
     rules = ruleFinderMethod()
+    argv.verbose && console.log( // eslint-disable-line no-console
+      '\n' + options[option][0] + ' rules\n' + rules.length + ' rules found\n'
+    )
     /* istanbul ignore next */
     if (rules.length) {
-      console.log('\n' + options[option][0], 'rules\n') // eslint-disable-line no-console
+      !argv.verbose && console.log('\n' + options[option][0] + ' rules\n') // eslint-disable-line no-console
       rules = rules.map(function columnSpecification(rule) {
         rule = rule + outputPadding
         outputMaxWidth = Math.max(rule.length, outputMaxWidth)
