@@ -94,6 +94,8 @@ var ruleFinder = getRuleFinder('path/to/eslint-config')
 
 ruleFinder.getCurrentRules()
 
+ruleFinder.getCurrentRulesDetailed()
+
 ruleFinder.getPluginRules()
 
 ruleFinder.getAllAvailableRules()

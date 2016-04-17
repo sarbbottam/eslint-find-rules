@@ -48,6 +48,15 @@ describe('rule-finder', function() {
     assert.deepEqual(ruleFinder.getCurrentRules(), ['foo-rule'])
   })
 
+  it('no specifiedFile - current rule config', function() {
+    var ruleFinder
+    process.cwd = function() {
+      return noSpecifiedFile
+    }
+    ruleFinder = getRuleFinder()
+    assert.deepEqual(ruleFinder.getCurrentRulesDetailed(), {'foo-rule': [2]})
+  })
+
   it('no specifiedFile - plugin rules', function() {
     var ruleFinder
     process.cwd = function() {
@@ -76,6 +85,11 @@ describe('rule-finder', function() {
     assert.deepEqual(ruleFinder.getCurrentRules(), ['bar-rule', 'foo-rule'])
   })
 
+  it('specifiedFile (relative path) - current rule config', function() {
+    var ruleFinder = getRuleFinder(specifiedFileRelative)
+    assert.deepEqual(ruleFinder.getCurrentRulesDetailed(), {'bar-rule': [2], 'foo-rule': [2]})
+  })
+
   it('specifiedFile (relative path) - plugin rules', function() {
     var ruleFinder = getRuleFinder(specifiedFileRelative)
     assert.deepEqual(ruleFinder.getPluginRules(), ['react/bar-rule', 'react/baz-rule', 'react/foo-rule'])
@@ -97,6 +111,11 @@ describe('rule-finder', function() {
   it('specifiedFile (absolut path) - curent rules', function() {
     var ruleFinder = getRuleFinder(specifiedFileAbsolute)
     assert.deepEqual(ruleFinder.getCurrentRules(), ['bar-rule', 'foo-rule'])
+  })
+
+  it('specifiedFile (absolut path) - current rule config', function() {
+    var ruleFinder = getRuleFinder(specifiedFileAbsolute)
+    assert.deepEqual(ruleFinder.getCurrentRulesDetailed(), {'foo-rule': [2], 'bar-rule': [2]})
   })
 
   it('specifiedFile (absolut path) - plugin rules', function() {
