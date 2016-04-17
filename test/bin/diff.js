@@ -4,7 +4,7 @@ var sinon = require('sinon')
 
 var consoleLog = console.log // eslint-disable-line no-console
 
-var difference = sinon.stub().returns(['diff'])
+var arrayDifference = sinon.stub().returns(['diff'])
 
 var stub = {
   '../lib/rule-finder': function() {
@@ -12,7 +12,7 @@ var stub = {
       getCurrentRules: function noop() {},
     }
   },
-  '../lib/array-diff': difference,
+  '../lib/array-diff': arrayDifference,
 }
 
 describe('diff', function() {
@@ -29,12 +29,12 @@ describe('diff', function() {
     process.argv[2] = './foo'
     process.argv[3] = './bar'
     console.log = function() { // eslint-disable-line no-console
-      if (arguments[0].match(/(diff)/)) {
+      if (arguments[0].match(/(diff|but not in|rules found)/)) {
         return
       }
       consoleLog.apply(null, arguments)
     }
     proxyquire('../../src/bin/diff', stub)
-    assert.ok(difference.called)
+    assert.ok(arrayDifference.called)
   })
 })
