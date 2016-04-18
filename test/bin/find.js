@@ -24,7 +24,7 @@ var stub = {
 describe('bin', function() {
   beforeEach(function() {
     console.log = function() { // eslint-disable-line no-console
-      if (arguments[0].match(/(current|plugin|all\-available|unused)/)) {
+      if (arguments[0].match(/(current|plugin|all\-available|unused|rules found)/)) {
         return
       }
       consoleLog.apply(null, arguments)
@@ -88,12 +88,6 @@ describe('bin', function() {
   })
 
   it('verbose log', function() {
-    console.log = function() { // eslint-disable-line no-console
-      if (arguments[0].match(/(current|rules found)/)) {
-        return
-      }
-      consoleLog.apply(null, arguments)
-    }
     process.argv[2] = '-c'
     process.argv[3] = '--verbose'
     proxyquire('../../src/bin/find', stub)
