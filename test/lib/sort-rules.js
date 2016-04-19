@@ -16,4 +16,15 @@ describe('sort-rules', function() {
       ['a', 'aa', 'ab', 'b', 'c']
     )
   })
+
+  it('should return sorted rule configs', function() {
+    assert.deepEqual(
+      sortRules({'bar-rule': {config1: '1', config2: '2'}, 'baz-rule': {config1: '3', config2: '4'}}),
+      ['bar-rule', '1', '2', 'baz-rule', '3', '4']
+    )
+    assert.deepEqual(
+      sortRules({'foo-rule': {config1: '1', config2: '2'}, 'bar-rule': {config1: '3', config2: '4'}}),
+      ['bar-rule', '3', '4', 'foo-rule', '1', '2']
+    )
+  })
 })
