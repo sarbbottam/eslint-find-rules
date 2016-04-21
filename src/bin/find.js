@@ -8,6 +8,7 @@ var options = {
   getAllAvailableRules: ['all-available', 'a'],
   getUnusedRules: ['unused', 'u'],
   n: ['no-error'],
+  verbose: ['verbose', 'v'],
 }
 
 var argv = require('yargs')
@@ -27,12 +28,12 @@ Object.keys(options).forEach(function findRules(option) {
   var ruleFinderMethod = ruleFinder[option]
   if (argv[option] && ruleFinderMethod) {
     rules = ruleFinderMethod()
-    /* istanbul ignore next */
+    argv.verbose && cli.push('\n' + options[option][0] + ' rules\n' + rules.length + ' rules found\n')
     if (rules.length) {
-      cli.push('\n' + options[option][0] + ' rules\n')
+      !argv.verbose && cli.push('\n' + options[option][0] + ' rules\n')
       cli.push(rules)
       cli.write()
-    } else if (option === 'getUnusedRules') {
+    } else /* istanbul ignore else */ if (option === 'getUnusedRules') {
       processExitCode = 0
     }
   }
