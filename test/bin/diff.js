@@ -8,9 +8,11 @@ var stub = {
   '../lib/rule-finder': function() {
     return {
       getCurrentRules: function noop() {},
+      getCurrentRulesDetailed: function noop() {},
     }
   },
   '../lib/array-diff': sinon.stub().returns(['diff']),
+  '../lib/object-diff': sinon.stub().returns([{'test-rule': {config1: 'foo-config', config2: 'bar-config'}}]),
 }
 
 describe('diff', function() {
@@ -27,9 +29,11 @@ describe('diff', function() {
 
   afterEach(function() {
     console.log.restore() // eslint-disable-line no-console
+    // purge yargs cache
+    delete require.cache[require.resolve('yargs')]
   })
 
-  it('log diff', function() {
+  it('logs diff', function() {
     process.argv[2] = './foo'
     process.argv[3] = './bar'
     proxyquire('../../src/bin/diff', stub)
@@ -37,6 +41,20 @@ describe('diff', function() {
       console.log.calledWith( // eslint-disable-line no-console
         sinon.match(
           /diff rules[^]*in foo but not in bar:[^]*diff[^]*in bar but not in foo:[^]*diff/
+        )
+      )
+    )
+  })
+
+  it('logs diff verbosely', function() {
+    process.argv[2] = '--verbose'
+    process.argv[3] = './foo'
+    process.argv[4] = './bar'
+    proxyquire('../../src/bin/diff', stub)
+    assert.ok(
+      console.log.calledWith( // eslint-disable-line no-console
+        sinon.match(
+          /diff rules[^]*foo[^]*bar[^]*test-rule[^]*foo-config[^]*bar-config/
         )
       )
     )
