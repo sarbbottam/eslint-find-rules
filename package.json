@@ -31,7 +31,7 @@
     "cliui": "^3.2.0",
     "path-is-absolute": "1.0.0",
     "window-size": "^0.2.0",
-    "yargs": "^4.4.0"
+    "yargs": "^4.6.0"
   },
   "devDependencies": {
     "all-contributors-cli": "2.0.0-beta6",
