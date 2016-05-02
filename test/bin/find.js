@@ -40,6 +40,21 @@ describe('bin', function() {
     delete require.cache[require.resolve('yargs')]
   })
 
+  it('no option', function() {
+    var callCount = 0
+    console.log = function() { // eslint-disable-line no-console
+      callCount += 1
+      if (arguments[0].match(
+        /(no option provided, please provide a valid option|usage:|eslint-find-rules \[option\] <file> \[flag\])/)
+      ) {
+        return
+      }
+      consoleLog.apply(null, arguments)
+    }
+    proxyquire('../../src/bin/find', stub)
+    assert.equal(callCount, 3) // eslint-disable-line no-console
+  })
+
   it('option -c|--current', function() {
     process.argv[2] = '-c'
     proxyquire('../../src/bin/find', stub)
