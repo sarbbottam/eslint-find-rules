@@ -2,6 +2,11 @@
 
 'use strict'
 
+// isGlobal has no use, make eslint happy
+// but eslint complains for vars-on-top
+// so ...
+var isGlobal = require('./is-global') // eslint-disable-line no-unused-vars
+
 var options = {
   getCurrentRules: ['current', 'c'],
   getPluginRules: ['plugin', 'p'],

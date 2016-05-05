@@ -50,6 +50,7 @@
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
     "validate-commit-msg": "2.6.1",
+    "which": "^1.2.8",
     "yargs": "^4.4.0"
   },
   "peerDependencies": {
