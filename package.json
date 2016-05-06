@@ -31,6 +31,7 @@
     "cliui": "^3.2.0",
     "path-is-absolute": "1.0.0",
     "window-size": "^0.2.0",
+    "which": "^1.2.8",
     "yargs": "^4.4.0"
   },
   "devDependencies": {
@@ -49,9 +50,7 @@
     "semantic-release": "4.3.5",
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
-    "validate-commit-msg": "2.6.1",
-    "which": "^1.2.8",
-    "yargs": "^4.4.0"
+    "validate-commit-msg": "2.6.1"
   },
   "peerDependencies": {
     "eslint": "^2.0.0"
