@@ -27,6 +27,9 @@ npm install --save-dev eslint-find-rules
 
 ## Usage
 
+> It is expected to be used as `local` utility, as it needs `eslint` and the `eslint-plugins` being referred by the `eslint-config` file, to be installed.
+Using it as a `global` utility, will error out, if `eslint` and the `eslint-plugins` being referred by the `eslint-config` file, are not installed globally.
+
 The intended usage is as an npm script:
 
 ```javascript
