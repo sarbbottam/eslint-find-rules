@@ -46,7 +46,7 @@
     "npm-run-all": "1.8.0",
     "nyc": "6.4.4",
     "opt-cli": "^1.1.1",
-    "proxyquire": "1.7.8",
+    "proxyquire": "1.7.9",
     "semantic-release": "4.3.5",
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
