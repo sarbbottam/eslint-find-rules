@@ -33,16 +33,35 @@ function _getCurrentRules(config) {
   return Object.keys(config.rules)
 }
 
+function _normalizePluginName(name) {
+  var scopedRegex = /(@[^/]+)\/(.+)/
+  var match = scopedRegex.exec(name)
+
+  if (match) {
+    return {
+      module: match[1] + '/' + 'eslint-plugin-' + match[2],
+      prefix: match[2],
+    }
+  }
+
+  return {
+    module: 'eslint-plugin-' + name,
+    prefix: name,
+  }
+}
+
 function _getPluginRules(config) {
   var pluginRules = []
   var plugins = config.plugins
   if (plugins) {
     plugins.forEach(function getPluginRule(plugin) {
-      var pluginConfig = require('eslint-plugin-' + plugin)
+      var normalized = _normalizePluginName(plugin)
+      var pluginConfig = require(normalized.module)
+
       var rules = pluginConfig.rules
       pluginRules = pluginRules.concat(
         Object.keys(rules).map(function normalizePluginRule(rule) {
-          return plugin + '/' + rule
+          return normalized.prefix + '/' + rule
         })
       )
     })

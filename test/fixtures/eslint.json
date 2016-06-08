@@ -1,6 +1,10 @@
 {
   "extends": "./eslint.yml",
   "plugins": [
-    "react"
-  ]
+    "plugin",
+    "@scope/scoped-plugin"
+  ],
+  "rules": {
+    "scoped-plugin/foo-rule": [2]
+  }
 }
