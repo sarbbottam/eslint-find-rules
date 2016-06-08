@@ -31,6 +31,15 @@
       ]
     },
     {
+      "login": "scottnonnenberg",
+      "name": "Scott Nonnenberg",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/443005?v=3",
+      "profile": "https://github.com/scottnonnenberg",
+      "contributions": [
+        "code", "test"
+      ]
+    },
+    {
       "login": "mgol",
       "name": "Michał Gołębiowski",
       "avatar_url": "https://avatars3.githubusercontent.com/u/1758366?v=3",
