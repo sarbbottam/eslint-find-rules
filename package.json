@@ -44,7 +44,7 @@
     "ghooks": "1.2.3",
     "mocha": "^2.4.5",
     "npm-run-all": "2.1.2",
-    "nyc": "6.4.4",
+    "nyc": "6.6.1",
     "opt-cli": "^1.1.1",
     "proxyquire": "1.7.9",
     "semantic-release": "4.3.5",
