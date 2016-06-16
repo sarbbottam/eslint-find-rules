@@ -41,7 +41,7 @@
     "cz-conventional-changelog": "1.1.6",
     "eslint": "2.12.0",
     "eslint-config-kentcdodds": "6.2.0",
-    "ghooks": "1.2.3",
+    "ghooks": "1.2.4",
     "mocha": "^2.4.5",
     "npm-run-all": "2.1.2",
     "nyc": "6.6.1",
