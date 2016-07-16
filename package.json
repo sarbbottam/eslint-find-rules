@@ -35,7 +35,7 @@
     "yargs": "^4.4.0"
   },
   "devDependencies": {
-    "all-contributors-cli": "3.0.5",
+    "all-contributors-cli": "3.0.6",
     "codecov": "1.0.1",
     "commitizen": "2.8.2",
     "cz-conventional-changelog": "1.1.6",
