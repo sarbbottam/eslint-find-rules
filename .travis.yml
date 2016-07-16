@@ -12,6 +12,7 @@ before_install:
   - npm i -g npm@^3.0.0
 before_script:
   - npm prune
+  - if [[ `node -v | sed 's/[^0-9\.]//g'` < 1 ]]; then npm i eslint@2.13.1; fi
 script:
   - npm run validate
 after_success:
