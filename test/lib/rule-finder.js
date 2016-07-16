@@ -7,7 +7,7 @@ var processCwd = process.cwd
 var getRuleFinder = proxyquire('../../src/lib/rule-finder', {
   fs: {
     readdirSync: function() {
-      return ['foo-rule.js', 'bar-rule.js', 'baz-rule.js']
+      return ['.eslintrc.yml', 'foo-rule.js', 'bar-rule.js', 'baz-rule.js']
     },
   },
   'eslint-plugin-plugin': {

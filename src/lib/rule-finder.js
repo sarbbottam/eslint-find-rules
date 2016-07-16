@@ -72,13 +72,16 @@ function _getPluginRules(config) {
 function _getAllAvailableRules(pluginRules) {
   var allRules = fs
     .readdirSync('./node_modules/eslint/lib/rules')
-    .map(function removeJsFromFilename(filename) {
-      return filename.replace(/\.js$/, '')
-    })
+  var filteredAllRules = []
+  allRules.forEach(function filterAllRules(filename) {
+    if (filename.slice(-3) === '.js') {
+      filteredAllRules.push(filename.replace(/\.js$/, ''))
+    }
+  })
 
-  allRules = allRules.concat(pluginRules)
+  filteredAllRules = filteredAllRules.concat(pluginRules)
 
-  return allRules
+  return filteredAllRules
 }
 
 function RuleFinder(specifiedFile) {
