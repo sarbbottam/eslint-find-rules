@@ -84,13 +84,22 @@ function _getAllAvailableRules(pluginRules) {
   return filteredAllRules
 }
 
-function RuleFinder(specifiedFile) {
+function _isNotCore(rule) {
+  return rule.indexOf('/') !== '-1'
+}
+
+function RuleFinder(specifiedFile, noCore) {
   var configFile = _getConfigFile(specifiedFile)
   var config = _getConfig(configFile)
   var currentRules = _getCurrentRules(config)
   var pluginRules = _getPluginRules(config)
-  var allRules = _getAllAvailableRules(pluginRules)
-  var unusedRules = difference(allRules, currentRules)
+  var allRules = pluginRules
+  if (noCore) {
+    currentRules = currentRules.filter(_isNotCore)
+  } else {
+    allRules = _getAllAvailableRules(pluginRules)
+  }
+  var unusedRules = difference(allRules, currentRules) // eslint-disable-line vars-on-top
 
   // get all the current rules instead of referring the extended files or documentation
   this.getCurrentRules = function getCurrentRules() {
@@ -118,6 +127,6 @@ function RuleFinder(specifiedFile) {
 
 }
 
-module.exports = function getRuleFinder(specifiedFile) {
-  return new RuleFinder(specifiedFile)
+module.exports = function getRuleFinder(specifiedFile, noCore) {
+  return new RuleFinder(specifiedFile, noCore)
 }
