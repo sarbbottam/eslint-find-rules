@@ -38,8 +38,12 @@ Object.keys(options).forEach(function findRules(option) {
     rules = ruleFinderMethod()
     argv.verbose && cli.push('\n' + options[option][0] + ' rules\n' + rules.length + ' rules found\n')
     if (rules.length) {
-      !argv.verbose && cli.push('\n' + options[option][0] + ' rules\n')
-      cli.push(rules)
+      if (argv.verbose) {
+        cli.verbosePush(rules)
+      } else {
+        cli.push('\n' + options[option][0] + ' rules\n')
+        cli.push(rules)
+      }
       cli.write()
     } else /* istanbul ignore else */ if (option === 'getUnusedRules') {
       processExitCode = 0
