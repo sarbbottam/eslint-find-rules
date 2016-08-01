@@ -8,7 +8,7 @@ var options = {
   getAllAvailableRules: ['all-available', 'a'],
   getUnusedRules: ['unused', 'u'],
   n: ['no-error'],
-  noCore: ['nocore', 'C'],
+  nc: ['no-core'],
   verbose: ['verbose', 'v'],
 }
 
@@ -23,7 +23,7 @@ var processExitCode = argv.u && !argv.n ? 1 : 0
 var getRuleFinder = require('../lib/rule-finder')
 var specifiedFile = argv._[0]
 
-var ruleFinder = getRuleFinder(specifiedFile, argv.noCore)
+var ruleFinder = getRuleFinder(specifiedFile, argv.core === false)
 
 if (!argv.c && !argv.p && !argv.a && !argv.u) {
   console.log('no option provided, please provide a valid option') // eslint-disable-line no-console

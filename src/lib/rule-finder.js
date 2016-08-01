@@ -93,11 +93,9 @@ function RuleFinder(specifiedFile, noCore) {
   var config = _getConfig(configFile)
   var currentRules = _getCurrentRules(config)
   var pluginRules = _getPluginRules(config)
-  var allRules = pluginRules
+  var allRules = noCore ? pluginRules : _getAllAvailableRules(pluginRules)
   if (noCore) {
     currentRules = currentRules.filter(_isNotCore)
-  } else {
-    allRules = _getAllAvailableRules(pluginRules)
   }
   var unusedRules = difference(allRules, currentRules) // eslint-disable-line vars-on-top
 
