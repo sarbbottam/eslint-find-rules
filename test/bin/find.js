@@ -5,10 +5,10 @@ var sinon = require('sinon')
 var consoleLog = console.log // eslint-disable-line no-console
 var processExit = process.exit
 
-var getCurrentRules = sinon.stub().returns(['current'])
-var getPluginRules = sinon.stub().returns(['plugin'])
-var getAllAvailableRules = sinon.stub().returns(['all-available'])
-var getUnusedRules = sinon.stub().returns(['unused'])
+var getCurrentRules = sinon.stub().returns(['current', 'rules'])
+var getPluginRules = sinon.stub().returns(['plugin', 'rules'])
+var getAllAvailableRules = sinon.stub().returns(['all', 'available'])
+var getUnusedRules = sinon.stub().returns(['unused', 'rules'])
 
 var stub = {
   '../lib/rule-finder': function() {
