@@ -51,7 +51,7 @@
     "semantic-release": "4.3.5",
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
-    "validate-commit-msg": "2.6.1"
+    "validate-commit-msg": "2.8.0"
   },
   "peerDependencies": {
     "eslint": "^2.0.0 || ^3.0.0"
