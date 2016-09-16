@@ -19,6 +19,11 @@ var getRuleFinder = proxyquire('../../src/lib/rule-finder', {
     '@noCallThru': true,
     '@global': true,
   },
+  'eslint-plugin-no-rules': {
+    processors: {},
+    '@noCallThru': true,
+    '@global': true,
+  },
   '@scope/eslint-plugin-scoped-plugin': {
     rules: {
       'foo-rule': true,
@@ -32,6 +37,7 @@ var getRuleFinder = proxyquire('../../src/lib/rule-finder', {
 var noSpecifiedFile = path.resolve(process.cwd(), './test/fixtures/no-path')
 var specifiedFileRelative = './test/fixtures/eslint.json'
 var specifiedFileAbsolute = path.join(process.cwd(), specifiedFileRelative)
+var noRulesFile = path.join(process.cwd(), './test/fixtures/eslint-with-plugin-with-no-rules.json')
 
 describe('rule-finder', function() {
   afterEach(function() {
@@ -210,5 +216,14 @@ describe('rule-finder', function() {
         'scoped-plugin/foo-rule',
       ]
     )
+  })
+
+  it('specifiedFile (absolute path) without rules - plugin rules', function() {
+    var ruleFinder = getRuleFinder(noRulesFile)
+    assert.deepEqual(ruleFinder.getPluginRules(), [
+      'plugin/bar-rule',
+      'plugin/baz-rule',
+      'plugin/foo-rule',
+    ])
   })
 })

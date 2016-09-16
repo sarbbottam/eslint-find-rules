@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    "plugin",
+    "no-rules"
+  ],
+  "rules": {}
+}
