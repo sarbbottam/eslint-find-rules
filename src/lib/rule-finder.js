@@ -58,7 +58,7 @@ function _getPluginRules(config) {
       var normalized = _normalizePluginName(plugin)
       var pluginConfig = require(normalized.module)
 
-      var rules = pluginConfig.rules
+      var rules = pluginConfig.rules === undefined ? {} : pluginConfig.rules
       pluginRules = pluginRules.concat(
         Object.keys(rules).map(function normalizePluginRule(rule) {
           return normalized.prefix + '/' + rule
