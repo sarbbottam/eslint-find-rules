@@ -20,6 +20,7 @@ var argv = require('yargs')
 var getRuleURI = require('eslint-rule-documentation')
 
 var cli = require('../lib/cli-util')
+var chalk = require('chalk')
 
 var processExitCode = argv.u && !argv.n ? 1 : 0
 var getRuleFinder = require('../lib/rule-finder')
@@ -43,7 +44,7 @@ Object.keys(options).forEach(function findRules(option) {
     if (rules.length) {
       if (argv.verbose) {
         rules = rules.map(function(rule) {
-          return [rule, getRuleURI(rule).url]
+          return [rule, chalk.underline(getRuleURI(rule).url)]
         }).reduce(function(all, single) {
           return all.concat(single)
         })
