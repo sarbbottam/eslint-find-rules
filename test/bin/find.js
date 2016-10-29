@@ -10,19 +10,21 @@ var getPluginRules = sinon.stub().returns(['plugin', 'rules'])
 var getAllAvailableRules = sinon.stub().returns(['all', 'available'])
 var getUnusedRules = sinon.stub().returns(['unused', 'rules'])
 
-var stub = {
-  '../lib/rule-finder': function() {
-    return {
-      getCurrentRules: getCurrentRules,
-      getPluginRules: getPluginRules,
-      getAllAvailableRules: getAllAvailableRules,
-      getUnusedRules: getUnusedRules,
-    }
-  },
-}
+var stub
 
 describe('bin', function() {
   beforeEach(function() {
+    stub = {
+      '../lib/rule-finder': function() {
+        return {
+          getCurrentRules: getCurrentRules,
+          getPluginRules: getPluginRules,
+          getAllAvailableRules: getAllAvailableRules,
+          getUnusedRules: getUnusedRules,
+        }
+      },
+    }
+
     console.log = function() { // eslint-disable-line no-console
       if (arguments[0].match(/(current|plugin|all\-available|unused|rules found)/)) {
         return
@@ -107,5 +109,36 @@ describe('bin', function() {
     process.argv[3] = '-v'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getCurrentRules.called)
+  })
+
+  it('logs core rules', function() {
+    stub = {
+      '../lib/rule-finder': function(specifiedFile, noCore) {
+        return {
+          getCurrentRules: function() {
+            assert(!noCore)
+            return ['current', 'rules']
+          },
+        }
+      },
+    }
+    process.argv[2] = '-c'
+    proxyquire('../../src/bin/find', stub)
+  })
+
+  it('does not log core rules', function() {
+    stub = {
+      '../lib/rule-finder': function(specifiedFile, noCore) {
+        return {
+          getCurrentRules: function() {
+            assert(noCore)
+            return ['current', 'rules']
+          },
+        }
+      },
+    }
+    process.argv[2] = '-c'
+    process.argv[3] = '--no-core'
+    proxyquire('../../src/bin/find', stub)
   })
 })
