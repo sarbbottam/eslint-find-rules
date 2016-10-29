@@ -59,16 +59,25 @@ describe('bin', function() {
     process.argv[2] = '-c'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getCurrentRules.called)
+    process.argv[2] = '--current'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getCurrentRules.called)
   })
 
   it('option -p|--plugin', function() {
     process.argv[2] = '-p'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getPluginRules.called)
+    process.argv[2] = '--plugin'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getPluginRules.called)
   })
 
-  it('option -a|--all-available', function() {
+  it('option -a|-all-available', function() {
     process.argv[2] = '-a'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getAllAvailableRules.called)
+    process.argv[2] = '-all-available'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getAllAvailableRules.called)
   })
@@ -80,9 +89,12 @@ describe('bin', function() {
     process.argv[2] = '-u'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getUnusedRules.called)
+    process.argv[2] = '--unused'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getUnusedRules.called)
   })
 
-  it('options -u|--unused and no unused rules found', function() {
+  it('options -u|-unused and no unused rules found', function() {
     getUnusedRules.returns([])
     process.exit = function(status) {
       assert.equal(status, 0)
@@ -90,9 +102,12 @@ describe('bin', function() {
     process.argv[2] = '-u'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getUnusedRules.called)
+    process.argv[2] = '--unused'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getUnusedRules.called)
   })
 
-  it('option -u|--unused along with -n|no-error', function() {
+  it('option -u|-unused along with -n|-no-error', function() {
     process.exit = function(status) {
       assert.equal(status, 0)
     }
@@ -100,11 +115,20 @@ describe('bin', function() {
     process.argv[3] = '-n'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getUnusedRules.called)
+
+    process.argv[2] = '--unused'
+    process.argv[3] = '-no-error'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getUnusedRules.called)
   })
 
   it('logs verbosely', function() {
     process.argv[2] = '-c'
     process.argv[3] = '-v'
+    proxyquire('../../src/bin/find', stub)
+    assert.ok(getCurrentRules.called)
+    process.argv[2] = '--current'
+    process.argv[3] = '--verbose'
     proxyquire('../../src/bin/find', stub)
     assert.ok(getCurrentRules.called)
   })

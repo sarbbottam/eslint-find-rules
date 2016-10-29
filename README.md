@@ -43,8 +43,8 @@ The intended usage is as an npm script:
 ```
 
 ```
-available options are -c|--current, -a|--all-available, -p|--plugin, -u|--unused
-available flag is -n|--no-error
+available options are -c|--current, -a|-all-available, -p|--plugin, -u|--unused
+available flag is -n|-no-error
 ```
 
 By default it will error out only for `-u|--unused`,
@@ -57,8 +57,8 @@ Then run it with: `$ npm run eslint-find-option-rules -s` (the `-s` is to silenc
 This is really handy in an actual config module (like [eslint-config-kentcdodds](https://github.com/kentcdodds/eslint-config-kentcdodds)) where you could also do:
 
 ```
-// available options are -c|--current, -a|--all-available, -p|--plugin, -u|--unused
-eslint-find-rules --option ./index.js
+// available options are -c|--current, -a|-all-available, -p|--plugin, -u|--unused
+eslint-find-rules --option|-hyphenated-option ./index.js
 ```
 
 This is resolved, relative to the `process.cwd()` which, in the context of `npm` scripts is always the location of your `package.json`.
@@ -70,7 +70,7 @@ You may specify any [config format supported by ESLint](http://eslint.org/docs/u
 You can also provide an absolute path:
 
 ```
-eslint-find-rules --option ~/Developer/eslint-config-kentcdodds/index.js
+eslint-find-rules --option|-hyphenated-option ~/Developer/eslint-config-kentcdodds/index.js
 ```
 
 **Please note** that any tested ESLint config file must reside below your project's root.
@@ -80,7 +80,7 @@ eslint-find-rules --option ~/Developer/eslint-config-kentcdodds/index.js
 It will also default to the `main` in your `package.json`, so you can omit the `path/to/file` argument:
 
 ```
-eslint-find-rules --option
+eslint-find-rules --option|-hyphenated-option
 ```
 
 ### As a `require`d module
