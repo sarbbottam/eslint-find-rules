@@ -12,14 +12,12 @@ function flattenRulesDiffObject(diffObject) {
   const flattened = [];
 
   Object.keys(diffObject).forEach(ruleName => {
-    const ruleRow = [ruleName];
     const diff = diffObject[ruleName];
+    const ruleRow = [ruleName].concat(
+      Object.keys(diff).map(configName => diff[configName])
+    );
 
-    Object.keys(diff).forEach(configName => {
-      ruleRow.push(diff[configName]);
-    });
-
-    flattened.push.apply(flattened, ruleRow);
+    flattened.push(...ruleRow);
   });
 
   return flattened;
@@ -29,7 +27,7 @@ function flattenRulesDiffArray(diffArray) {
   const flattened = [];
 
   diffArray.forEach(diff => {
-    flattened.push.apply(flattened, flattenRulesDiff(diff));
+    flattened.push(...flattenRulesDiff(diff));
   });
 
   return flattened;

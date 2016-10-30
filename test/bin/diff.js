@@ -18,10 +18,10 @@ const stub = {
 describe('diff', () => {
   beforeEach(() => {
     process.argv = process.argv.slice(0, 2);
-    sinon.stub(console, 'log', function () {
+    sinon.stub(console, 'log', (...args) => {
       // print out everything but the test target's output
-      if (!arguments[0].match(/diff/)) {
-        consoleLog.apply(null, arguments);
+      if (!args[0].match(/diff/)) {
+        consoleLog(...args);
       }
     });
   });

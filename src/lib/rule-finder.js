@@ -98,28 +98,18 @@ function RuleFinder(specifiedFile, noCore) {
   const unusedRules = difference(allRules, currentRules); // eslint-disable-line vars-on-top
 
   // get all the current rules instead of referring the extended files or documentation
-  this.getCurrentRules = function () {
-    return getSortedRules(currentRules);
-  };
+  this.getCurrentRules = () => getSortedRules(currentRules);
 
   // get all the current rules' particular configuration
-  this.getCurrentRulesDetailed = function () {
-    return config.rules;
-  };
+  this.getCurrentRulesDetailed = () => config.rules;
 
   // get all the plugin rules instead of referring the extended files or documentation
-  this.getPluginRules = function () {
-    return getSortedRules(pluginRules);
-  };
+  this.getPluginRules = () => getSortedRules(pluginRules);
 
   // get all the available rules instead of referring eslint and plugin packages or documentation
-  this.getAllAvailableRules = function () {
-    return getSortedRules(allRules);
-  };
+  this.getAllAvailableRules = () => getSortedRules(allRules);
 
-  this.getUnusedRules = function () {
-    return getSortedRules(unusedRules);
-  };
+  this.getUnusedRules = () => getSortedRules(unusedRules);
 }
 
 module.exports = function (specifiedFile, noCore) {

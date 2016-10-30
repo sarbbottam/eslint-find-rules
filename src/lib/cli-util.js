@@ -7,9 +7,7 @@ function push(output, columns, uniformColWidths) {
   const _output = [].concat(output);
 
   const padding = {top: 0, right: 2, bottom: 0, left: 0};
-  const maxWidth = [_output.reduce((previous, current) => {
-    return Math.max(padding.left + current.length + padding.right, previous);
-  }, 0)];
+  const maxWidth = [_output.reduce((previous, current) => Math.max(padding.left + current.length + padding.right, previous), 0)];
 
   const _columns = columns || Math.floor(availableWidth / maxWidth);
   let widths;
@@ -29,7 +27,7 @@ function push(output, columns, uniformColWidths) {
   const cellMapper = getOutputCellMapper(widths, padding);
 
   while (_output.length) {
-    ui.div.apply(ui, _output.splice(0, _columns).map(cellMapper));
+    ui.div(..._output.splice(0, _columns).map(cellMapper));
   }
 }
 

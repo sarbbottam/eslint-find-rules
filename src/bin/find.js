@@ -46,11 +46,9 @@ Object.keys(options).forEach(option => {
     }
     if (rules.length > 0) {
       if (argv.verbose) {
-        rules = rules.map(rule => {
-          return [rule, getRuleURI(rule).url];
-        }).reduce((all, single) => {
-          return all.concat(single);
-        });
+        rules = rules
+          .map(rule => [rule, getRuleURI(rule).url])
+          .reduce((all, single) => all.concat(single));
         cli.push(rules, 2, false);
       } else {
         cli.push('\n' + options[option][0] + ' rules\n');

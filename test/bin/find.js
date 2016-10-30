@@ -25,11 +25,11 @@ describe('bin', () => {
       }
     };
 
-    console.log = function () { // eslint-disable-line no-console
-      if (arguments[0].match(/(current|plugin|all-available|unused|rules found)/)) {
+    console.log = (...args) => { // eslint-disable-line no-console
+      if (args[0].match(/(current|plugin|all-available|unused|rules found)/)) {
         return;
       }
-      consoleLog.apply(null, arguments);
+      consoleLog(...args);
     };
     process.exit = function () {}; // noop
     process.argv = process.argv.slice(0, 2);
@@ -44,14 +44,14 @@ describe('bin', () => {
 
   it('no option', () => {
     let callCount = 0;
-    console.log = function () { // eslint-disable-line no-console
+    console.log = (...args) => { // eslint-disable-line no-console
       callCount += 1;
-      if (arguments[0].match(
+      if (args[0].match(
         /(no option provided, please provide a valid option|usage:|eslint-find-rules \[option] <file> \[flag])/)
       ) {
         return;
       }
-      consoleLog.apply(null, arguments);
+      consoleLog(...args);
     };
     proxyquire('../../src/bin/find', stub);
     assert.equal(callCount, 3); // eslint-disable-line no-console
@@ -79,7 +79,7 @@ describe('bin', () => {
   });
 
   it('option -u|--unused', () => {
-    process.exit = function (status) {
+    process.exit = status => {
       assert.equal(status, 1);
     };
     process.argv[2] = '-u';
@@ -89,7 +89,7 @@ describe('bin', () => {
 
   it('options -u|--unused and no unused rules found', () => {
     getUnusedRules.returns([]);
-    process.exit = function (status) {
+    process.exit = status => {
       assert.equal(status, 0);
     };
     process.argv[2] = '-u';
@@ -98,7 +98,7 @@ describe('bin', () => {
   });
 
   it('option -u|--unused along with -n|--no-error', () => {
-    process.exit = function (status) {
+    process.exit = status => {
       assert.equal(status, 0);
     };
     process.argv[2] = '-u';
