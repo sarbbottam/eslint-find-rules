@@ -25,11 +25,13 @@ var getRuleURI = require('eslint-rule-documentation')
 
 var cli = require('../lib/cli-util')
 
-var processExitCode = argv.u && (!argv.n || argv.error) ? 1 : 0
 var getRuleFinder = require('../lib/rule-finder')
 var specifiedFile = argv._[0]
 
 var ruleFinder = getRuleFinder(specifiedFile, argv.core === false)
+
+var errorOut = argv.error && !argv.n
+var processExitCode = argv.u && errorOut ? 1 : 0
 
 if (!argv.c && !argv.p && !argv.a && !argv.u) {
   console.log('no option provided, please provide a valid option') // eslint-disable-line no-console
