@@ -1,19 +1,18 @@
 function difference(a, b) {
-  var hash = {}
-  var diff = {}
+  const hash = {};
+  const diff = {};
 
-  b.forEach(function createHash(item) {
-    hash[item] = true
-  })
+  b.forEach(item => {
+    hash[item] = true;
+  });
 
-  a.forEach(function findDiff(item) {
+  a.forEach(item => {
     if (!hash[item] && !diff[item]) {
-      diff[item] = true
+      diff[item] = true;
     }
-  })
+  });
 
-  return Object.keys(diff)
-
+  return Object.keys(diff);
 }
 
-module.exports = difference
+module.exports = difference;

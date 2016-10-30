@@ -1,38 +1,38 @@
 function flattenRulesDiff(diff) {
   if (Array.isArray(diff)) {
-    return flattenRulesDiffArray(diff)
+    return flattenRulesDiffArray(diff);
   } else if (typeof diff === 'object') {
-    return flattenRulesDiffObject(diff)
+    return flattenRulesDiffObject(diff);
   }
 
-  return []
+  return [];
 }
 
 function flattenRulesDiffObject(diffObject) {
-  var flattened = []
+  const flattened = [];
 
-  Object.keys(diffObject).forEach(function flattenEachRuleDiff(ruleName) {
-    var ruleRow = [ruleName]
-    var diff = diffObject[ruleName]
+  Object.keys(diffObject).forEach(ruleName => {
+    const ruleRow = [ruleName];
+    const diff = diffObject[ruleName];
 
-    Object.keys(diff).forEach(function flattenEachChildProp(configName) {
-      ruleRow.push(diff[configName])
-    })
+    Object.keys(diff).forEach(configName => {
+      ruleRow.push(diff[configName]);
+    });
 
-    flattened.push.apply(flattened, ruleRow)
-  })
+    flattened.push.apply(flattened, ruleRow);
+  });
 
-  return flattened
+  return flattened;
 }
 
 function flattenRulesDiffArray(diffArray) {
-  var flattened = []
+  const flattened = [];
 
-  diffArray.forEach(function flattenEachDiff(diff) {
-    flattened.push.apply(flattened, flattenRulesDiff(diff))
-  })
+  diffArray.forEach(diff => {
+    flattened.push.apply(flattened, flattenRulesDiff(diff));
+  });
 
-  return flattened
+  return flattened;
 }
 
-module.exports = flattenRulesDiff
+module.exports = flattenRulesDiff;

@@ -1,11 +1,11 @@
 function stringifyRuleConfig(rule) {
   if (typeof rule === 'string') {
-    return rule
+    return rule;
   } else if (typeof rule === 'undefined') {
-    return '-'
+    return '-';
   }
 
-  return JSON.stringify(rule)
+  return JSON.stringify(rule);
 }
 
-module.exports = stringifyRuleConfig
+module.exports = stringifyRuleConfig;

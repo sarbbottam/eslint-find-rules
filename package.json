@@ -2,19 +2,20 @@
   "name": "eslint-find-rules",
   "version": "0.0.0-semantically-released",
   "description": "Find built-in ESLint rules you don't have in your custom config.",
-  "main": "src/lib/rule-finder.js",
+  "main": "dist/lib/rule-finder.js",
   "scripts": {
     "cover": "nyc --reporter=lcov --reporter=text npm test",
-    "test": "mocha --recursive",
-    "lint": "eslint --ignore-pattern test/fixtures .",
+    "test": "xo && mocha --recursive",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
     "validate": "npm-run-all --parallel lint cover --sequential check-coverage",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
+    "build": "babel src -d dist --presets es2015",
     "report-coverage": "cat ./coverage/lcov.info | node_modules/.bin/codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "travis-after-all": "travis-after-all && npm run report-coverage && npm run semantic-release"
   },
+  "files": ["dist"],
   "bin": {
     "eslint-find-rules": "src/bin/find.js",
     "eslint-diff-rules": "src/bin/diff.js"
@@ -37,11 +38,13 @@
   },
   "devDependencies": {
     "all-contributors-cli": "3.0.6",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
     "codecov": "1.0.1",
     "commitizen": "2.8.6",
     "cz-conventional-changelog": "1.2.0",
     "eslint": "3.5.0",
-    "eslint-config-kentcdodds": "6.2.0",
     "ghooks": "1.3.2",
     "mocha": "^3.0.1",
     "npm-run-all": "3.1.0",
@@ -51,24 +54,11 @@
     "semantic-release": "4.3.5",
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
-    "validate-commit-msg": "2.8.0"
+    "validate-commit-msg": "2.8.0",
+    "xo": "^0.17.0"
   },
   "peerDependencies": {
     "eslint": "^2.0.0 || ^3.0.0"
-  },
-  "eslintConfig": {
-    "extends": "kentcdodds",
-    "parserOptions": {
-      "ecmaVersion": 5
-    },
-    "env": {
-      "mocha": true
-    },
-    "rules": {
-      "no-var": 0,
-      "func-names": 0,
-      "object-shorthand": 0
-    }
   },
   "nyc": {
     "exclude": [
@@ -91,5 +81,12 @@
   "bugs": {
     "url": "https://github.com/sarbbottam/eslint-find-rules/issues"
   },
-  "homepage": "https://github.com/sarbbottam/eslint-find-rules#readme"
+  "homepage": "https://github.com/sarbbottam/eslint-find-rules#readme",
+  "xo": {
+    "envs": [
+      "mocha"
+    ],
+    "esnext": true,
+    "space": true
+  }
 }

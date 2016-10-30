@@ -1,27 +1,27 @@
-var assert = require('assert')
+const assert = require('assert');
 
 function difference(a, b) {
-  var diff = {}
+  const diff = {};
 
-  Object.keys(a).forEach(compare(diff, a, b))
-  Object.keys(b).forEach(compare(diff, a, b))
+  Object.keys(a).forEach(compare(diff, a, b));
+  Object.keys(b).forEach(compare(diff, a, b));
 
-  return diff
+  return diff;
 }
 
 function compare(diff, a, b) {
-  return function curried(n) {
+  return n => {
     if (!diff[n]) {
       try {
-        assert.deepEqual(a[n], b[n])
-      } catch (e) {
+        assert.deepEqual(a[n], b[n]);
+      } catch (err) {
         diff[n] = {
           config1: a[n],
-          config2: b[n],
-        }
+          config2: b[n]
+        };
       }
     }
-  }
+  };
 }
 
-module.exports = difference
+module.exports = difference;
