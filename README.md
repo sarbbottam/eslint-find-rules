@@ -13,7 +13,7 @@ to list current configured rules, all-available rules, unused rules, and plugin 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
 
-## Acknowledgement
+## Acknowledgment
 
 This module is an extended version of [eslint-find-new-rules](https://github.com/kentcdodds/eslint-find-new-rules)
 
