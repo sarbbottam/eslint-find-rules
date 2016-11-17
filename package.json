@@ -48,7 +48,7 @@
     "nyc": "6.6.1",
     "opt-cli": "^1.1.1",
     "proxyquire": "1.7.10",
-    "semantic-release": "4.3.5",
+    "semantic-release": "6.3.2",
     "sinon": "^1.17.3",
     "travis-after-all": "^1.4.4",
     "validate-commit-msg": "2.8.0"
