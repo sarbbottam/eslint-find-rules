@@ -38,7 +38,7 @@
   "devDependencies": {
     "all-contributors-cli": "3.0.6",
     "codecov": "1.0.1",
-    "commitizen": "2.8.6",
+    "commitizen": "2.9.6",
     "cz-conventional-changelog": "1.2.0",
     "eslint": "3.5.0",
     "eslint-config-kentcdodds": "6.2.0",
