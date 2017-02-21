@@ -24,6 +24,7 @@ var argv = require('yargs')
 var getRuleURI = require('eslint-rule-documentation')
 
 var cli = require('../lib/cli-util')
+var chalk = require('chalk')
 
 var getRuleFinder = require('../lib/rule-finder')
 var specifiedFile = argv._[0]
@@ -49,7 +50,7 @@ Object.keys(options).forEach(function findRules(option) {
     if (rules.length) {
       if (argv.verbose) {
         rules = rules.map(function(rule) {
-          return [rule, getRuleURI(rule).url]
+          return [rule, chalk.underline(getRuleURI(rule).url)]
         }).reduce(function(all, single) {
           return all.concat(single)
         })
