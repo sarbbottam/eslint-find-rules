@@ -6,13 +6,13 @@
   "scripts": {
     "cover": "nyc --reporter=lcov --reporter=text npm test",
     "lint": "xo",
-    "test": "mocha --recursive",
+    "test": "mocha --compilers js:babel-core/register --recursive",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
     "validate": "npm-run-all --parallel lint cover --sequential check-coverage",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
     "prebuild": "rimraf dist",
-    "build": "babel src -d dist --presets es2015",
+    "build": "babel src -d dist",
     "report-coverage": "cat ./coverage/lcov.info | node_modules/.bin/codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "travis-after-all": "travis-after-all && npm run report-coverage && npm run semantic-release"
