@@ -5,9 +5,14 @@ const proxyquire = require('proxyquire');
 const processCwd = process.cwd;
 
 const getRuleFinder = proxyquire('../../src/lib/rule-finder', {
-  fs: {
-    readdirSync() {
-      return ['.eslintrc.yml', 'foo-rule.js', 'bar-rule.js', 'baz-rule.js'];
+  eslint: {
+    linter: {
+      getRules() {
+        return new Map()
+          .set('foo-rule', {})
+          .set('bar-rule', {})
+          .set('baz-rule', {});
+      }
     }
   },
   'eslint-plugin-plugin': {

@@ -65,6 +65,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "randycoulman",
+      "name": "Randy Coulman",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1406203?v=3",
+      "profile": "https://github.com/randycoulman",
+      "contributions": [
+        "code", "test"
+      ]
     }
   ]
 }

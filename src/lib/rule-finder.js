@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 const eslint = require('eslint');
 const isAbsolute = require('path-is-absolute');
@@ -68,18 +67,10 @@ function _getPluginRules(config) {
 }
 
 function _getAllAvailableRules(pluginRules) {
-  const allRules = fs
-    .readdirSync('./node_modules/eslint/lib/rules');
-  let filteredAllRules = [];
-  allRules.forEach(filename => {
-    if (filename.slice(-3) === '.js') {
-      filteredAllRules.push(filename.replace(/\.js$/, ''));
-    }
-  });
-
-  filteredAllRules = filteredAllRules.concat(pluginRules);
-
-  return filteredAllRules;
+  return [
+    ...eslint.linter.getRules().keys(),
+    ...pluginRules
+  ];
 }
 
 function _isNotCore(rule) {
