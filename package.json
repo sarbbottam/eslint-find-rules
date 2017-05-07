@@ -34,7 +34,7 @@
     "eslint-rule-documentation": "^1.0.0",
     "path-is-absolute": "1.0.0",
     "which": "^1.2.8",
-    "window-size": "^0.2.0",
+    "window-size": "^1.0.0",
     "yargs": "^5.0.0"
   },
   "devDependencies": {
