@@ -35,7 +35,7 @@
     "path-is-absolute": "1.0.0",
     "which": "^1.2.8",
     "window-size": "^0.2.0",
-    "yargs": "^5.0.0"
+    "yargs": "^7.1.0"
   },
   "devDependencies": {
     "all-contributors-cli": "3.0.6",
