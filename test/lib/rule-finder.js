@@ -10,6 +10,7 @@ const getRuleFinder = proxyquire('../../src/lib/rule-finder', {
       getRules() {
         return new Map()
           .set('foo-rule', {})
+          .set('old-rule', {meta: {deprecated: true}})
           .set('bar-rule', {})
           .set('baz-rule', {});
       }
@@ -17,9 +18,10 @@ const getRuleFinder = proxyquire('../../src/lib/rule-finder', {
   },
   'eslint-plugin-plugin': {
     rules: {
-      'foo-rule': true,
-      'bar-rule': true,
-      'baz-rule': true
+      'foo-rule': {},
+      'bar-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'baz-rule': {}
     },
     '@noCallThru': true,
     '@global': true
@@ -31,8 +33,9 @@ const getRuleFinder = proxyquire('../../src/lib/rule-finder', {
   },
   '@scope/eslint-plugin-scoped-plugin': {
     rules: {
-      'foo-rule': true,
-      'bar-rule': true
+      'foo-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'bar-rule': {}
     },
     '@noCallThru': true,
     '@global': true
@@ -49,12 +52,20 @@ describe('rule-finder', () => {
     process.cwd = processCwd;
   });
 
-  it('no specifiedFile is passed to the constructor', () => {
+  it('no specifiedFile - unused rules', () => {
     process.cwd = function () {
       return noSpecifiedFile;
     };
     const ruleFinder = getRuleFinder();
     assert.deepEqual(ruleFinder.getUnusedRules(), ['bar-rule', 'baz-rule']);
+  });
+
+  it('no specifiedFile - unused rules including deprecated', () => {
+    process.cwd = function () {
+      return noSpecifiedFile;
+    };
+    const ruleFinder = getRuleFinder(null, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getUnusedRules(), ['bar-rule', 'baz-rule', 'old-rule']);
   });
 
   it('no specifiedFile - current rules', () => {
@@ -93,11 +104,19 @@ describe('rule-finder', () => {
     process.cwd = function () {
       return noSpecifiedFile;
     };
-    const ruleFinder = getRuleFinder(null, true);
+    const ruleFinder = getRuleFinder(null, {omitCore: true});
     assert.deepEqual(ruleFinder.getAllAvailableRules(), []);
   });
 
-  it('specifiedFile (relative path) is passed to the constructor', () => {
+  it('no specifiedFile - all available rules including deprecated', () => {
+    process.cwd = function () {
+      return noSpecifiedFile;
+    };
+    const ruleFinder = getRuleFinder(null, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getAllAvailableRules(), ['bar-rule', 'baz-rule', 'foo-rule', 'old-rule']);
+  });
+
+  it('specifiedFile (relative path) - unused rules', () => {
     const ruleFinder = getRuleFinder(specifiedFileRelative);
     assert.deepEqual(ruleFinder.getUnusedRules(), [
       'baz-rule',
@@ -105,6 +124,20 @@ describe('rule-finder', () => {
       'plugin/baz-rule',
       'plugin/foo-rule',
       'scoped-plugin/bar-rule'
+    ]);
+  });
+
+  it('specifiedFile (relative path) - unused rules including deprecated', () => {
+    const ruleFinder = getRuleFinder(specifiedFileRelative, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getUnusedRules(), [
+      'baz-rule',
+      'old-rule',
+      'plugin/bar-rule',
+      'plugin/baz-rule',
+      'plugin/foo-rule',
+      'plugin/old-plugin-rule',
+      'scoped-plugin/bar-rule',
+      'scoped-plugin/old-plugin-rule'
     ]);
   });
 
@@ -133,6 +166,19 @@ describe('rule-finder', () => {
     ]);
   });
 
+  it('specifiedFile (relative path) - plugin rules including deprecated', () => {
+    const ruleFinder = getRuleFinder(specifiedFileRelative, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getPluginRules(), [
+      'plugin/bar-rule',
+      'plugin/baz-rule',
+      'plugin/foo-rule',
+      'plugin/old-plugin-rule',
+      'scoped-plugin/bar-rule',
+      'scoped-plugin/foo-rule',
+      'scoped-plugin/old-plugin-rule'
+    ]);
+  });
+
   it('specifiedFile (relative path) - all available rules', () => {
     const ruleFinder = getRuleFinder(specifiedFileRelative);
     assert.deepEqual(
@@ -151,7 +197,7 @@ describe('rule-finder', () => {
   });
 
   it('specifiedFile (relative path) - all available rules without core', () => {
-    const ruleFinder = getRuleFinder(specifiedFileRelative, true);
+    const ruleFinder = getRuleFinder(specifiedFileRelative, {omitCore: true});
     assert.deepEqual(
       ruleFinder.getAllAvailableRules(),
       [
@@ -164,7 +210,27 @@ describe('rule-finder', () => {
     );
   });
 
-  it('specifiedFile (absolute path) is passed to the constructor', () => {
+  it('specifiedFile (relative path) - all available rules including deprecated', () => {
+    const ruleFinder = getRuleFinder(specifiedFileRelative, {includeDeprecated: true});
+    assert.deepEqual(
+      ruleFinder.getAllAvailableRules(),
+      [
+        'bar-rule',
+        'baz-rule',
+        'foo-rule',
+        'old-rule',
+        'plugin/bar-rule',
+        'plugin/baz-rule',
+        'plugin/foo-rule',
+        'plugin/old-plugin-rule',
+        'scoped-plugin/bar-rule',
+        'scoped-plugin/foo-rule',
+        'scoped-plugin/old-plugin-rule'
+      ]
+    );
+  });
+
+  it('specifiedFile (absolute path) - unused rules', () => {
     const ruleFinder = getRuleFinder(specifiedFileAbsolute);
     assert.deepEqual(ruleFinder.getUnusedRules(), [
       'baz-rule',
@@ -172,6 +238,20 @@ describe('rule-finder', () => {
       'plugin/baz-rule',
       'plugin/foo-rule',
       'scoped-plugin/bar-rule'
+    ]);
+  });
+
+  it('specifiedFile (absolute path) - unused rules', () => {
+    const ruleFinder = getRuleFinder(specifiedFileAbsolute, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getUnusedRules(), [
+      'baz-rule',
+      'old-rule',
+      'plugin/bar-rule',
+      'plugin/baz-rule',
+      'plugin/foo-rule',
+      'plugin/old-plugin-rule',
+      'scoped-plugin/bar-rule',
+      'scoped-plugin/old-plugin-rule'
     ]);
   });
 
@@ -200,6 +280,19 @@ describe('rule-finder', () => {
     ]);
   });
 
+  it('specifiedFile (absolute path) - plugin rules including deprecated', () => {
+    const ruleFinder = getRuleFinder(specifiedFileAbsolute, {includeDeprecated: true});
+    assert.deepEqual(ruleFinder.getPluginRules(), [
+      'plugin/bar-rule',
+      'plugin/baz-rule',
+      'plugin/foo-rule',
+      'plugin/old-plugin-rule',
+      'scoped-plugin/bar-rule',
+      'scoped-plugin/foo-rule',
+      'scoped-plugin/old-plugin-rule'
+    ]);
+  });
+
   it('specifiedFile (absolute path) - all available rules', () => {
     const ruleFinder = getRuleFinder(specifiedFileAbsolute);
     assert.deepEqual(
@@ -213,6 +306,26 @@ describe('rule-finder', () => {
         'plugin/foo-rule',
         'scoped-plugin/bar-rule',
         'scoped-plugin/foo-rule'
+      ]
+    );
+  });
+
+  it('specifiedFile (absolute path) - all available rules including deprecated', () => {
+    const ruleFinder = getRuleFinder(specifiedFileAbsolute, {includeDeprecated: true});
+    assert.deepEqual(
+      ruleFinder.getAllAvailableRules(),
+      [
+        'bar-rule',
+        'baz-rule',
+        'foo-rule',
+        'old-rule',
+        'plugin/bar-rule',
+        'plugin/baz-rule',
+        'plugin/foo-rule',
+        'plugin/old-plugin-rule',
+        'scoped-plugin/bar-rule',
+        'scoped-plugin/foo-rule',
+        'scoped-plugin/old-plugin-rule'
       ]
     );
   });

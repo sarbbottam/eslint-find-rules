@@ -8,7 +8,6 @@ const options = {
   getUnusedRules: ['unused', 'u'],
   n: [],
   error: ['error'],
-  nc: [],
   core: ['core'],
   verbose: ['verbose', 'v']
 };
@@ -16,16 +15,24 @@ const options = {
 const argv = require('yargs')
   .boolean(Object.keys(options))
   .alias(options)
+  .option('include', {
+    alias: 'i',
+    choices: ['deprecated'],
+    type: 'string'
+  })
   .default('error', true)
   .default('core', true)
   .argv;
-
 const getRuleURI = require('eslint-rule-documentation');
 const getRuleFinder = require('../lib/rule-finder');
 const cli = require('../lib/cli-util');
 
 const specifiedFile = argv._[0];
-const ruleFinder = getRuleFinder(specifiedFile, argv.core === false);
+const finderOptions = {
+  omitCore: !argv.core,
+  includeDeprecated: argv.include === 'deprecated'
+};
+const ruleFinder = getRuleFinder(specifiedFile, finderOptions);
 const errorOut = argv.error && !argv.n;
 let processExitCode = argv.u && errorOut ? 1 : 0;
 

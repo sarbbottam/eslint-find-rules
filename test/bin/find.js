@@ -97,7 +97,7 @@ describe('bin', () => {
     assert.ok(getUnusedRules.called);
   });
 
-  it('option -u|--unused along with -n|--no-error', () => {
+  it('option -u|--unused along with -n', () => {
     process.exit = status => {
       assert.equal(status, 0);
     };
@@ -105,6 +105,12 @@ describe('bin', () => {
     process.argv[3] = '-n';
     proxyquire('../../src/bin/find', stub);
     assert.ok(getUnusedRules.called);
+  });
+
+  it('option -u|--unused along with --no-error', () => {
+    process.exit = status => {
+      assert.equal(status, 0);
+    };
     process.argv[2] = '-u';
     process.argv[3] = '--no-error';
     proxyquire('../../src/bin/find', stub);
@@ -120,10 +126,10 @@ describe('bin', () => {
 
   it('logs core rules', () => {
     stub = {
-      '../lib/rule-finder'(specifiedFile, noCore) {
+      '../lib/rule-finder'(specifiedFile, options) {
         return {
           getCurrentRules() {
-            assert(!noCore);
+            assert(!options.omitCore);
             return ['current', 'rules'];
           }
         };
@@ -133,12 +139,12 @@ describe('bin', () => {
     proxyquire('../../src/bin/find', stub);
   });
 
-  it('does not log core rules', () => {
+  it('does not log core rules with --no-core', () => {
     stub = {
-      '../lib/rule-finder'(specifiedFile, noCore) {
+      '../lib/rule-finder'(specifiedFile, options) {
         return {
           getCurrentRules() {
-            assert(noCore);
+            assert(options.omitCore);
             return ['current', 'rules'];
           }
         };
@@ -146,6 +152,54 @@ describe('bin', () => {
     };
     process.argv[2] = '-c';
     process.argv[3] = '--no-core';
+    proxyquire('../../src/bin/find', stub);
+  });
+
+  it('does not include deprecated rules by default', () => {
+    stub = {
+      '../lib/rule-finder'(specifiedFile, options) {
+        return {
+          getAllAvailableRules() {
+            assert(!options.includeDeprecated);
+            return ['current', 'rules'];
+          }
+        };
+      }
+    };
+    process.argv[2] = '-a';
+    proxyquire('../../src/bin/find', stub);
+  });
+
+  it('includes deprecated rules with --include deprecated', () => {
+    stub = {
+      '../lib/rule-finder'(specifiedFile, options) {
+        return {
+          getAllAvailableRules() {
+            assert(options.includeDeprecated);
+            return ['current', 'rules'];
+          }
+        };
+      }
+    };
+    process.argv[2] = '-a';
+    process.argv[3] = '--include=deprecated';
+    proxyquire('../../src/bin/find', stub);
+  });
+
+  it('includes deprecated rules with -i deprecated', () => {
+    stub = {
+      '../lib/rule-finder'(specifiedFile, options) {
+        return {
+          getAllAvailableRules() {
+            assert(options.includeDeprecated);
+            return ['current', 'rules'];
+          }
+        };
+      }
+    };
+    process.argv[2] = '-a';
+    process.argv[3] = '-i';
+    process.argv[4] = 'deprecated';
     proxyquire('../../src/bin/find', stub);
   });
 });

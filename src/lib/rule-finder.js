@@ -47,7 +47,11 @@ function _normalizePluginName(name) {
   };
 }
 
-function _getPluginRules(config) {
+function _isDeprecated(rule) {
+  return rule.meta && rule.meta.deprecated;
+}
+
+function _getPluginRules(config, {includeDeprecated}) {
   let pluginRules = [];
   const plugins = config.plugins;
   if (plugins) {
@@ -57,33 +61,34 @@ function _getPluginRules(config) {
 
       const rules = pluginConfig.rules === undefined ? {} : pluginConfig.rules;
       pluginRules = pluginRules.concat(
-        Object.keys(rules).map(rule => {
-          return normalized.prefix + '/' + rule;
-        })
+        Object.keys(rules)
+          .filter(rule => includeDeprecated || !_isDeprecated(rules[rule]))
+          .map(rule => `${normalized.prefix}/${rule}`)
       );
     });
   }
   return pluginRules;
 }
 
-function _getAllAvailableRules(pluginRules) {
-  return [
-    ...eslint.linter.getRules().keys(),
-    ...pluginRules
-  ];
+function _getCoreRules({includeDeprecated}) {
+  const rules = eslint.linter.getRules();
+  return Array.from(rules.keys())
+    .filter(rule => includeDeprecated || !_isDeprecated(rules.get(rule)));
 }
 
 function _isNotCore(rule) {
   return rule.indexOf('/') !== '-1';
 }
 
-function RuleFinder(specifiedFile, noCore) {
+function RuleFinder(specifiedFile, options = {}) {
+  const {omitCore, includeDeprecated} = options;
   const configFile = _getConfigFile(specifiedFile);
   const config = _getConfig(configFile);
   let currentRules = _getCurrentRules(config);
-  const pluginRules = _getPluginRules(config);
-  const allRules = noCore ? pluginRules : _getAllAvailableRules(pluginRules);
-  if (noCore) {
+  const pluginRules = _getPluginRules(config, {includeDeprecated});
+  const coreRules = _getCoreRules({includeDeprecated});
+  const allRules = omitCore ? pluginRules : [...coreRules, ...pluginRules];
+  if (omitCore) {
     currentRules = currentRules.filter(_isNotCore);
   }
   const unusedRules = difference(allRules, currentRules); // eslint-disable-line vars-on-top
@@ -103,6 +108,6 @@ function RuleFinder(specifiedFile, noCore) {
   this.getUnusedRules = () => getSortedRules(unusedRules);
 }
 
-module.exports = function (specifiedFile, noCore) {
-  return new RuleFinder(specifiedFile, noCore);
+module.exports = function (specifiedFile, options = {}) {
+  return new RuleFinder(specifiedFile, options);
 };
