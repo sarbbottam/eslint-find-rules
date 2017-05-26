@@ -54,7 +54,7 @@
     "proxyquire": "1.7.10",
     "rimraf": "^2.6.0",
     "semantic-release": "4.3.5",
-    "sinon": "^1.17.3",
+    "sinon": "^2.3.2",
     "travis-after-all": "^1.4.4",
     "validate-commit-msg": "2.8.0",
     "xo": "^0.17.0"
