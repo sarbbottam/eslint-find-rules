@@ -55,7 +55,7 @@ Object.keys(options).forEach(option => {
         cli.push(rules);
       }
       cli.write();
-    } else /* istanbul ignore else */ if (option === 'getUnusedRules') {
+    } else /* istanbul ignore next */ if (option === 'getUnusedRules') {
       processExitCode = 0;
     }
   }
