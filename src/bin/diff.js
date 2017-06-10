@@ -57,7 +57,7 @@ function getFilesToCompare(allFiles) {
   const filesToCompare = [allFiles];
 
   if (!argv.verbose) {
-    // in non-verbose output mode, compare a to b
+    // In non-verbose output mode, compare a to b
     // and b to a afterwards, to obtain ALL differences
     // accross those files, but grouped
     filesToCompare.push([].concat(allFiles).reverse());

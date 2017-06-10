@@ -7,7 +7,7 @@ const moduleStub = {
 };
 
 const loggerStub = {
-  log() {} // noop
+  log() {} // Noop
 };
 
 describe('cli-util', () => {

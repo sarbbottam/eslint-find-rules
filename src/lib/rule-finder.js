@@ -12,15 +12,15 @@ function _getConfigFile(specifiedFile) {
     }
     return path.join(process.cwd(), specifiedFile); // eslint-disable-line import/no-dynamic-require
   }
-  // this is not being called with an arg. Use the package.json `main`
+  // This is not being called with an arg. Use the package.json `main`
   return require(path.join(process.cwd(), 'package.json')).main; // eslint-disable-line import/no-dynamic-require
 }
 
 function _getConfig(configFile) {
   const cliEngine = new eslint.CLIEngine({
-    // ignore any config applicable depending on the location on the filesystem
+    // Ignore any config applicable depending on the location on the filesystem
     useEslintrc: false,
-    // point to the particular config
+    // Point to the particular config
     configFile
   });
   return cliEngine.getConfigForFile();
@@ -88,16 +88,16 @@ function RuleFinder(specifiedFile, noCore) {
   }
   const unusedRules = difference(allRules, currentRules); // eslint-disable-line vars-on-top
 
-  // get all the current rules instead of referring the extended files or documentation
+  // Get all the current rules instead of referring the extended files or documentation
   this.getCurrentRules = () => getSortedRules(currentRules);
 
-  // get all the current rules' particular configuration
+  // Get all the current rules' particular configuration
   this.getCurrentRulesDetailed = () => config.rules;
 
-  // get all the plugin rules instead of referring the extended files or documentation
+  // Get all the plugin rules instead of referring the extended files or documentation
   this.getPluginRules = () => getSortedRules(pluginRules);
 
-  // get all the available rules instead of referring eslint and plugin packages or documentation
+  // Get all the available rules instead of referring eslint and plugin packages or documentation
   this.getAllAvailableRules = () => getSortedRules(allRules);
 
   this.getUnusedRules = () => getSortedRules(unusedRules);

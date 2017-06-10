@@ -7,8 +7,8 @@ const consoleLog = console.log; // eslint-disable-line no-console
 const stub = {
   '../lib/rule-finder'() {
     return {
-      getCurrentRules() {}, // noop
-      getCurrentRulesDetailed() {} // noop
+      getCurrentRules() {}, // Noop
+      getCurrentRulesDetailed() {} // Noop
     };
   },
   '../lib/array-diff': sinon.stub().returns(['diff']),
@@ -19,7 +19,7 @@ describe('diff', () => {
   beforeEach(() => {
     process.argv = process.argv.slice(0, 2);
     sinon.stub(console, 'log', (...args) => {
-      // print out everything but the test target's output
+      // Print out everything but the test target's output
       if (!args[0].match(/diff/)) {
         consoleLog(...args);
       }

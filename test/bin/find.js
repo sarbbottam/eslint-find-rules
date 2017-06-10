@@ -31,14 +31,14 @@ describe('bin', () => {
       }
       consoleLog(...args);
     };
-    process.exit = function () {}; // noop
+    process.exit = function () {}; // Noop
     process.argv = process.argv.slice(0, 2);
   });
 
   afterEach(() => {
     console.log = consoleLog; // eslint-disable-line no-console
     process.exit = processExit;
-    // purge yargs cache
+    // Purge yargs cache
     delete require.cache[require.resolve('yargs')];
   });
 
