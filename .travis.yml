@@ -13,6 +13,7 @@ node_js:
 before_install:
     - "npm install -g npm@^5"
 before_script:
+  - npm ls
   - npm prune
 script:
   - npm run validate
