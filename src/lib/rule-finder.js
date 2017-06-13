@@ -80,7 +80,7 @@ function _isNotCore(rule) {
   return rule.indexOf('/') !== '-1';
 }
 
-function RuleFinder(specifiedFile, options) {
+function RuleFinder(specifiedFile, options = {}) {
   const {omitCore, includeDeprecated} = options;
   const configFile = _getConfigFile(specifiedFile);
   const config = _getConfig(configFile);
@@ -108,6 +108,6 @@ function RuleFinder(specifiedFile, options) {
   this.getUnusedRules = () => getSortedRules(unusedRules);
 }
 
-module.exports = function (specifiedFile, options = {}) {
+module.exports = function (specifiedFile, options) {
   return new RuleFinder(specifiedFile, options);
 };
