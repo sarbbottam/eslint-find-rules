@@ -80,7 +80,7 @@ function _isNotCore(rule) {
   return rule.indexOf('/') !== '-1';
 }
 
-function RuleFinder(specifiedFile, options = {}) {
+function RuleFinder(specifiedFile, options) {
   const {omitCore, includeDeprecated} = options;
   const configFile = _getConfigFile(specifiedFile);
   const config = _getConfig(configFile);
