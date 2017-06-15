@@ -13,8 +13,6 @@ script:
   - 'if [ -n "${LINTONLY-}" ]; then npm run lint; else npm run cover && npm run check-coverage; fi'
 after_success:
   - npm run travis-after-all
-env:
-  - LINTONLY=false
 matrix:
   include:
     - node_js: "node"
