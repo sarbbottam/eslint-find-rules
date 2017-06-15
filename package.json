@@ -6,7 +6,7 @@
   "scripts": {
     "cover": "nyc --reporter=lcov --reporter=text npm test",
     "lint": "xo",
-    "test": "mocha --compilers js:babel-core/register --recursive",
+    "test": "mocha --recursive",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
     "validate": "npm-run-all --parallel lint cover --sequential check-coverage",
