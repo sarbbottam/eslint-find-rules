@@ -8,6 +8,7 @@ node_js:
   - '6'
   - '4'
 before_script:
+  - 'if [ -n "${TEST_ESLINT_3-}" ]; then npm install eslint@^3.12.0; fi'
   - npm prune
 script:
   - 'if [ -n "${LINTONLY-}" ]; then npm run lint; else npm run cover && npm run check-coverage; fi'
@@ -15,6 +16,14 @@ after_success:
   - npm run travis-after-all
 matrix:
   include:
+    - node_js: "node"
+      env: TEST_ESLINT_3=true
+    - node_js: "7"
+      env: TEST_ESLINT_3=true
+    - node_js: "6"
+      env: TEST_ESLINT_3=true
+    - node_js: "4"
+      env: TEST_ESLINT_3=true
     - node_js: "node"
       env: LINTONLY=true
 branches:
