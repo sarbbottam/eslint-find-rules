@@ -48,6 +48,27 @@ describe('bin', () => {
     delete require.cache[require.resolve('yargs')];
   });
 
+  it('checks for eslint', () => {
+    let callCount = 0;
+    console.log = (...args) => { // eslint-disable-line no-console
+      callCount += 1;
+      if (args[0].match(
+        /(Could not load|requires) ESLint/)
+      ) {
+        return;
+      }
+      consoleLog(...args);
+    };
+    proxyquire('../../src/bin/find', {
+      '../lib/check-eslint': {
+        check: () => false,
+        requiredVersion: '1.2.3'
+      }
+    });
+    assert.equal(callCount, 2);
+    assert.equal(exitStatus, 1);
+  });
+
   it('no option', () => {
     let callCount = 0;
     console.log = (...args) => { // eslint-disable-line no-console
