@@ -23,7 +23,7 @@ function _getConfig(configFile) {
     // Point to the particular config
     configFile
   });
-  return cliEngine.getConfigForFile();
+  return cliEngine.getConfigForFile(configFile);
 }
 
 function _getCurrentNamesRules(config) {
