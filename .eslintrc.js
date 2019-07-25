@@ -1,8 +1,4 @@
 module.exports = {
-  env: {},
-  extends: [],
-  globals: {},
-  overrides: [],
   parserOptions: {
     ecmaVersion: 2015,
   },
@@ -10,8 +6,4 @@ module.exports = {
     'json',
   ],
   root: true,
-  rules: {},
-  settings: {
-    polyfills: [],
-  },
 };
