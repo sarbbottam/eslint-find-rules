@@ -4,12 +4,7 @@ module.exports = {
   globals: {},
   overrides: [],
   parserOptions: {
-    ecmaFeatures: {
-      impliedStrict: true,
-    },
-    ecmaVersion: 2018,
-    parser: 'babel-eslint', // https://github.com/vuejs/eslint-plugin-vue#what-is-the-use-the-latest-vue-eslint-parser-error
-    sourceType: 'module',
+    ecmaVersion: 2015,
   },
   plugins: [
     'json',
