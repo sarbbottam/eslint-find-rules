@@ -5,8 +5,7 @@
   "main": "dist/lib/rule-finder.js",
   "scripts": {
     "cover": "nyc --reporter=lcov --reporter=text npm test",
-    "lint": "eslint --ext .js,.json .",
-    "lint-fix": "npm run lint -- --fix",
+    "lint": "xo",
     "test": "mocha --recursive",
     "update-contributors": "all-contributors generate",
     "commit": "git-cz",
