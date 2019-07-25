@@ -1,5 +1,7 @@
 sudo: false
 language: node_js
+cache:
+  npm: false
 notifications:
   email: false
 node_js:
