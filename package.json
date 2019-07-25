@@ -90,5 +90,8 @@
     ],
     "esnext": true,
     "space": true
+  },
+  "engines": {
+    "node": ">=6"
   }
 }
