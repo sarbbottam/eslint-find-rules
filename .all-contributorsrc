@@ -110,6 +110,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "sturdynut",
+      "name": "Matti Salokangas",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8547391?v=4",
+      "profile": "https://sturdynut.com",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "repoType": "github"
