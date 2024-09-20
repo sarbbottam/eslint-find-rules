@@ -110,6 +110,6 @@
   },
   "homepage": "https://github.com/sarbbottam/eslint-find-rules#readme",
   "engines": {
-    "node": "^10.12.0 || >=12.0.0 || ^14.17.0 || >=16.0.0"
+    "node": "^14.17.0 || >=16.0.0"
   }
 }
