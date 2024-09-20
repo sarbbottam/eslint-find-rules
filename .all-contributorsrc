@@ -110,6 +110,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "jimsmithereens",
+      "name": "Jim Smith",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33069194?v=4",
+      "profile": "https://github.com/jimsmithereens",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "repoType": "github"
