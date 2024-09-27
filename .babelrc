@@ -2,9 +2,13 @@
   "presets": [
     ["env", {
       "targets": {
-        "node": "4"
+        "node": "18"
       },
       "exclude": ["transform-regenerator"]
     }]
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-class-properties"
   ]
 }

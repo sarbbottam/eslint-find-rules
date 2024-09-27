@@ -13,7 +13,7 @@ jobs:
         with:
           versionsAsRoot: true
           type: 'majors'
-          preset: '>=10'
+          preset: '>=18'
 
   majors:
     needs: [matrix]
@@ -56,7 +56,7 @@ jobs:
       - uses: codecov/codecov-action@v2
 
   node:
-    name: 'node 10+'
+    name: 'node 18+'
     needs: [majors]
     runs-on: ubuntu-latest
     steps:
