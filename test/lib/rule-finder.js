@@ -3,6 +3,7 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const { builtinRules } = require('eslint/use-at-your-own-risk');
 const semver = require('semver');
+const merge = require('lodash/merge');
 
 const processCwd = process.cwd;
 const eslintVersion = 'post-v5';
@@ -123,24 +124,35 @@ const getRuleFinder = (specifiedFileRelative, options) => {
               '@global': true
             }
           }
+
+          const mergedConfig = {};
+          defaultConfig.forEach(config => {
+            merge(mergedConfig, config);
+          });
+
           if(!specifiedFileRelative) {
             const config = proxyquire(path.resolve(process.cwd(), configFilePath), mock);
-            // calculateConfigArrayと同じ形式で返す
-            // https://github.com/eslint/eslint/blob/v9.11.1/lib/eslint/eslint.js#L522
             if (config) {
               if (Array.isArray(config)) {
-                return [...defaultConfig, ...config];
+                config.forEach(config => {
+                  merge(mergedConfig, config);
+                });
+                return mergedConfig;
               } else {
-                return [...defaultConfig, config];
+                return merge(mergedConfig, config);
               }
             }
           }
+
           const config = proxyquire(path.resolve(specifiedFileRelative), mock);
           if (config) {
             if (Array.isArray(config)) {
-              return [...defaultConfig, ...config];
+              config.forEach(config => {
+                merge(mergedConfig, config);
+              });
+              return mergedConfig;
             } else {
-              return [...defaultConfig, config];
+              return merge(mergedConfig, config);
             }
           }
         }
@@ -175,24 +187,35 @@ const getRuleFinderForDedupeTests = (specifiedFileRelative, options) => {
               '@global': true
             }
           }
+
+          const mergedConfig = {};
+          defaultConfig.forEach(config => {
+            merge(mergedConfig, config);
+          });
+
           if(!specifiedFileRelative) {
             const config = proxyquire(path.resolve(process.cwd(), configFilePath), mock);
-            // calculateConfigArrayと同じ形式で返す
-            // https://github.com/eslint/eslint/blob/v9.11.1/lib/eslint/eslint.js#L522
             if (config) {
               if (Array.isArray(config)) {
-                return [...defaultConfig, ...config];
+                config.forEach(config => {
+                  merge(mergedConfig, config);
+                });
+                return mergedConfig;
               } else {
-                return [...defaultConfig, config];
+                return merge(mergedConfig, config);
               }
             }
           }
+
           const config = proxyquire(path.resolve(specifiedFileRelative), mock);
           if (config) {
             if (Array.isArray(config)) {
-              return [...defaultConfig, ...config];
+              config.forEach(config => {
+                merge(mergedConfig, config);
+              });
+              return mergedConfig;
             } else {
-              return [...defaultConfig, config];
+              return merge(mergedConfig, config);
             }
           }
         }

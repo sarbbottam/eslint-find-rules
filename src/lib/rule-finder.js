@@ -24,23 +24,16 @@ async function _getConfigs(overrideConfigFile, files) {
     overrideConfigFile
   });
 
-  const flatConfigs = files.map(async filePath => (
+  const flatConfig = files.map(async filePath => (
     await esLint.isPathIgnored(filePath) ? false : esLint.calculateConfigForFile(filePath)
   ));
 
   const uniqueConfigs = [];
-  (await Promise.all(flatConfigs)).forEach((flatConfig) => {
-    if (!flatConfig) return;
-    flatConfig.forEach((config, index) => {
-      // Exclude ESLint's default settings at the beginning
-      if (index > 3) {
-        // Check if this config is already in uniqueConfigs
-        const isDuplicate = uniqueConfigs.some((existingConfig) => isEqual(existingConfig, config));
-        if (!isDuplicate) uniqueConfigs.push(config);
-      }
-    });
+  (await Promise.all(flatConfig)).forEach((config) => {
+    if (!config) return;
+    const isDuplicate = uniqueConfigs.some((existingConfig) => isEqual(existingConfig, config));
+    if (!isDuplicate) uniqueConfigs.push(config);
   });
-
   return uniqueConfigs;
 }
 
