@@ -53,7 +53,7 @@
     "codecov": "^2.3.1",
     "commitizen": "^2.10.1",
     "cz-conventional-changelog": "^2.1.0",
-    "eslint": "^9.11.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-json": "^4.0.1",
     "ghooks": "^2.0.4",
     "globals": "^15.9.0",
