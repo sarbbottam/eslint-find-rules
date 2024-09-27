@@ -1,10 +1,9 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/preset-env", {
       "targets": {
-        "node": "4"
-      },
-      "exclude": ["transform-regenerator"]
+        "node": "14"
+      }
     }]
   ]
 }

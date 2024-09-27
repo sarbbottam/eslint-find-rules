@@ -1,5 +1,5 @@
 module.exports = {
   rules: {
-    'foo-rule': [2]
+    "foo-rule": [2]
   }
-};
+}

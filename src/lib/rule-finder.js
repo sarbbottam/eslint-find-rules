@@ -1,10 +1,11 @@
 const path = require('path');
 
-const { ESLint, Linter } = require('eslint');
+const { ESLint } = require('eslint');
+const { builtinRules } = require('eslint/use-at-your-own-risk');
 const glob = require('glob');
+const isEqual = require('lodash/isEqual');
 const difference = require('./array-diff');
 const getSortedRules = require('./sort-rules');
-const normalizePluginName = require('./normalize-plugin-name');
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
@@ -19,23 +20,35 @@ function _getConfigFile(specifiedFile) {
 
 async function _getConfigs(overrideConfigFile, files) {
   const esLint = new ESLint({
-    // Ignore any config applicable depending on the location on the filesystem
-    useEslintrc: false,
     // Point to the particular config
     overrideConfigFile
   });
 
-  const configs = files.map(async filePath => (
+  const flatConfigs = files.map(async filePath => (
     await esLint.isPathIgnored(filePath) ? false : esLint.calculateConfigForFile(filePath)
   ));
-  return new Set((await Promise.all(configs)).filter(Boolean));
+
+  const uniqueConfigs = [];
+  (await Promise.all(flatConfigs)).forEach((flatConfig) => {
+    if (!flatConfig) return;
+    flatConfig.forEach((config, index) => {
+      // Exclude ESLint's default settings at the beginning
+      if (index > 3) {
+        // Check if this config is already in uniqueConfigs
+        const isDuplicate = uniqueConfigs.some((existingConfig) => isEqual(existingConfig, config));
+        if (!isDuplicate) uniqueConfigs.push(config);
+      }
+    });
+  });
+
+  return uniqueConfigs;
 }
 
 async function _getConfig(configFile, files) {
   return Array.from(await _getConfigs(configFile, files)).reduce((prev, item) => {
     return Object.assign(prev, item, {
       rules: Object.assign({}, prev.rules, item.rules),
-      plugins: [...new Set([].concat(prev.plugins || [], item.plugins || []))]
+      plugins: Object.assign({}, prev.plugins, item.plugins),
     });
   }, {});
 }
@@ -57,13 +70,11 @@ function _getPluginRules(config) {
   const plugins = config.plugins;
   /* istanbul ignore else */
   if (plugins) {
-    plugins.forEach(plugin => {
-      const normalized = normalizePluginName(plugin);
-      const pluginConfig = require(normalized.module);
-      const rules = pluginConfig.rules === undefined ? {} : pluginConfig.rules;
+    Object.keys(plugins).forEach(pluginName => {
+      const rules = plugins[pluginName].rules === undefined ? {} : plugins[pluginName].rules;
 
       Object.keys(rules).forEach(ruleName =>
-        pluginRules.set(`${normalized.prefix}/${ruleName}`, rules[ruleName])
+        pluginRules.set(`${pluginName}/${ruleName}`, rules[ruleName])
       );
     });
   }
@@ -71,7 +82,7 @@ function _getPluginRules(config) {
 }
 
 function _getCoreRules() {
-  return new Linter().getRules();
+  return builtinRules;
 }
 
 function _filterRuleNames(ruleNames, rules, predicate) {
@@ -91,7 +102,7 @@ function _createExtensionRegExp(extensions) {
     ext.startsWith('.') ? ext.slice(1) : ext
   ));
 
-  return new RegExp(`.\\.(?:${normalizedExts.join("|")})$`);
+  return new RegExp(`^(?!.*node_modules).*\\.(${normalizedExts.join("|")})$`);
 }
 
 function RuleFinder(config, {omitCore, includeDeprecated}) {
