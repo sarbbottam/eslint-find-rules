@@ -26,19 +26,10 @@ jobs:
         node-version: ${{ fromJson(needs.matrix.outputs.majors) }}
         eslint:
           - 8
-          - 7
-        include:
-          - node-version: 14
-            eslint: 7.7
+          - 9
         exclude:
-          - node-version: 15
-            eslint: 8
-          - node-version: 13
-            eslint: 8
-          - node-version: 11
-            eslint: 8
-          - node-version: 10
-            eslint: 8
+          - node-version: 19
+            eslint: 9
 
     steps:
       - uses: actions/checkout@v2
@@ -48,8 +39,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           skip-ls-check: true
       - run: npm install --no-save eslint@${{ matrix.eslint }}
-      - run: npm install --no-save @eslint/eslintrc@0
-        if: ${{ matrix.eslint != 8 }}
       - run: npm prune > /dev/null
       - run: npm ls > /dev/null
       - run: npm run cover

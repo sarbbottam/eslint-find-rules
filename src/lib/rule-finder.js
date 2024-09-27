@@ -10,7 +10,8 @@ let builtinRules, FlatESLint;
 try {
   const eslintInternal = require('eslint/use-at-your-own-risk');
   builtinRules = eslintInternal.builtinRules;
-  FlatESLint = eslintInternal.FlatESLint;
+  FlatESLint = ESLint.configType === 'flat' ? ESLint : eslintInternal.FlatESLint;
+// eslint-disable-next-line no-empty, no-unused-vars
 } catch (e) {}
 
 function _loadEslint(options, useFlatConfig) {
@@ -51,10 +52,10 @@ async function _getConfigs(overrideConfigFile, files, useFlatConfig) {
 
 async function _getConfig(configFile, files, useFlatConfig) {
   return Array.from(await _getConfigs(configFile, files, useFlatConfig)).reduce((prev, item) => {
-    const plugins = useFlatConfig 
+    const plugins = useFlatConfig || ESLint.configType === 'flat'
       ? Object.assign({}, prev.plugins, item.plugins)
       : [...new Set([].concat(prev.plugins || [], item.plugins || []))]
-    
+
     return Object.assign(prev, item, {
       rules: Object.assign({}, prev.rules, item.rules),
       plugins
@@ -79,7 +80,7 @@ function _getPluginRules(config, useFlatConfig) {
   const plugins = config.plugins;
   /* istanbul ignore else */
   if (plugins) {
-    if (useFlatConfig) {
+    if (useFlatConfig || ESLint.configType === 'flat') {
       Object.entries(config.plugins)
         .filter(([, { rules }]) => rules)
         .forEach(([pluginName, { rules }]) => {
@@ -167,7 +168,7 @@ function RuleFinder(config, {omitCore, includeDeprecated, useFlatConfig}) {
 async function createRuleFinder(specifiedFile, options) {
   const configFile = _getConfigFile(specifiedFile);
 
-  const {ext = ['.js']} = options;
+  const {ext = ['.js', '.cjs', '.mjs']} = options;
   const extensionRegExp = _createExtensionRegExp(ext);
   const files = glob.sync(`**/*`, {dot: true, matchBase: true})
     .filter(file => extensionRegExp.test(file));
