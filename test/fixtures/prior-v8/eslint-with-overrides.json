@@ -1,0 +1,37 @@
+{
+  "plugins": [
+    "plugin"
+  ],
+  "rules": {
+    "foo-rule": [2],
+    "old-rule": [2],
+
+    "plugin/old-plugin-rule": [2]
+  },
+
+  "overrides": [
+    {
+      "files": ["**/*.json"],
+
+      "plugins": [
+        "@scope/scoped-plugin",
+        "@scope"
+      ],
+      "rules": {
+        "@scope/scoped-plugin/foo-rule": [2],
+        "@scope/foo-rule": [2]
+      }
+    },
+    {
+      "files": ["**/*.txt"],
+
+      "plugins": [
+        "@scope-with-dash/scoped-with-dash-plugin",
+        "@scope-with-dash/eslint-plugin"
+      ],
+      "rules": {
+        "@scope-with-dash/scoped-with-dash-plugin/old-plugin-rule": [2]
+      }
+    }
+  ]
+}

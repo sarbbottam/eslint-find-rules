@@ -1,12 +1,34 @@
 const path = require('path');
+const createRequire = require('create-require');
 const assert = require('assert');
 const proxyquire = require('proxyquire');
 const { builtinRules } = require('eslint/use-at-your-own-risk');
 const semver = require('semver');
+const eslintPkg = require('eslint/package.json');
 const merge = require('lodash/merge');
 
 const processCwd = process.cwd;
-const eslintVersion = 'post-v5';
+const isV8Eslint = semver.satisfies(eslintPkg.version, '< 9');
+const eslintVersion = isV8Eslint ? 'prior-v8' : 'post-v8';
+
+const mockCreateRequire = (getExport, plugins, relative) => {
+  // Use the mocked require.
+  const moduleRequire = (id) => {
+    const targetExport = getExport();
+    return module.children
+      .find((m) => m.exports === targetExport)
+      .require(id);
+  };
+  return Object.assign(moduleRequire, {
+    // The strategy is simple: if called with one of our plugins, just return
+    // the module name, as-is. This is a lie because what we return is not a
+    // path, but it is simple, and works. Otherwise, we just call the original
+    // `resolve` from the stock module.
+    resolve: (name) => (
+      plugins.includes(name) ? name : createRequire(relative).resolve(name)
+    )
+  });
+};
 
 // https://github.com/eslint/eslint/blob/main/lib/config/default-config.js
 const defaultConfig = [
@@ -59,80 +81,135 @@ const defaultConfig = [
   }
 ];
 
-const getRuleFinder = (specifiedFileRelative, options) => {
-  const ruleFinder = proxyquire('../../src/lib/rule-finder', {
-    eslint: {
-      ESLint: class {
-        // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
-        //  or else you will get an error that the rule does not exist in ESLint
-        isPathIgnored() {
-          return false;
-        }
-        // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
-        //  or else you will get an error that the rule does not exist in ESLint
-        calculateConfigForFile(configFilePath) {
-          const mock = {
-            'eslint-plugin-plugin': {
-              rules: {
-                'foo-rule': {},
-                'bar-rule': {},
-                'old-plugin-rule': {meta: {deprecated: true}},
-                'baz-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
-            },
-            'eslint-plugin-no-rules': {
-              processors: {},
-              '@noCallThru': true,
-              '@global': true
-            },
-            '@scope/eslint-plugin-scoped-plugin': {
-              rules: {
-                'foo-rule': {},
-                'old-plugin-rule': {meta: {deprecated: true}},
-                'bar-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
-            },
-            '@scope': {
-              rules: {
-                'foo-rule': {},
-                'old-plugin-rule': {meta: {deprecated: true}},
-                'bar-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
-            },
-            '@scope-with-dash/eslint-plugin-scoped-with-dash-plugin': {
-              rules: {
-                'foo-rule': {},
-                'old-plugin-rule': {meta: {deprecated: true}},
-                'bar-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
-            },
-            '@scope-with-dash': {
-              rules: {
-                'foo-rule': {},
-                'old-plugin-rule': {meta: {deprecated: true}},
-                'bar-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
-            }
+const mock = {
+  'eslint-plugin-plugin': {
+    rules: {
+      'foo-rule': {},
+      'bar-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'baz-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  },
+  'eslint-plugin-no-rules': {
+    processors: {},
+    '@noCallThru': true,
+    '@global': true
+  },
+  '@scope/eslint-plugin-scoped-plugin': {
+    rules: {
+      'foo-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'bar-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  },
+  '@scope/eslint-plugin': {
+    rules: {
+      'foo-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'bar-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  },
+  '@scope-with-dash/eslint-plugin-scoped-with-dash-plugin': {
+    rules: {
+      'foo-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'bar-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  },
+  '@scope-with-dash/eslint-plugin': {
+    rules: {
+      'foo-rule': {},
+      'old-plugin-rule': {meta: {deprecated: true}},
+      'bar-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  }
+};
+
+const mockForDedupeTests = {
+  'eslint-plugin-plugin': {
+    rules: {
+      'duplicate-foo-rule': {},
+      'duplicate-bar-rule': {}
+    },
+    '@noCallThru': true,
+    '@global': true
+  }
+};
+
+const getRuleFinder = isV8Eslint 
+  ? proxyquire('../../src/lib/rule-finder', {
+      eslint: {
+        Linter: class {
+          getRules() {
+            return new Map()
+              .set('foo-rule', {})
+              .set('old-rule', {meta: {deprecated: true}})
+              .set('bar-rule', {})
+              .set('baz-rule', {});
           }
+        }
+      },
+      module: {
+        createRequire: (relative) => mockCreateRequire(
+          () => getRuleFinder,
+          [
+            'eslint-plugin-plugin',
+            'eslint-plugin-no-rules',
+            '@scope/eslint-plugin-scoped-plugin',
+            '@scope/eslint-plugin',
+            '@scope-with-dash/eslint-plugin-scoped-with-dash-plugin',
+            '@scope-with-dash/eslint-plugin'
+          ],
+          relative
+        ),
+        '@global': true
+      },
+      ...mock
+    })
+  : (specifiedFileRelative, options) => {
+      const config = specifiedFileRelative 
+        ? proxyquire(path.resolve(specifiedFileRelative), mock)
+        : proxyquire(path.resolve(process.cwd(), require(path.join(process.cwd(), 'package.json')).main), mock);
+      
+      const ruleFinder = proxyquire('../../src/lib/rule-finder', {
+        eslint: {
+          // for v9 ESLint
+          ESLint: class {
+            // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
+            //  or else you will get an error that the rule does not exist in ESLint
+            isPathIgnored(filePath) {
+              return filePath.includes('.ts') ? true : false;
+            }
+            // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
+            //  or else you will get an error that the rule does not exist in ESLint
+            // eslint-disable-next-line no-unused-vars
+            calculateConfigForFile(filePath) {
+              const mergedConfig = {};
+              defaultConfig.forEach(config => {
+                merge(mergedConfig, config);
+              });
 
-          const mergedConfig = {};
-          defaultConfig.forEach(config => {
-            merge(mergedConfig, config);
-          });
+              if(!specifiedFileRelative) {
+                if (Array.isArray(config)) {
+                  config.forEach(config => {
+                    merge(mergedConfig, config);
+                  });
+                  return mergedConfig;
+                } else {
+                  return merge(mergedConfig, config);
+                }
+              }
 
-          if(!specifiedFileRelative) {
-            const config = proxyquire(path.resolve(process.cwd(), configFilePath), mock);
-            if (config) {
               if (Array.isArray(config)) {
                 config.forEach(config => {
                   merge(mergedConfig, config);
@@ -142,60 +219,73 @@ const getRuleFinder = (specifiedFileRelative, options) => {
                 return merge(mergedConfig, config);
               }
             }
-          }
+          },
+        },
+        'eslint/use-at-your-own-risk': {
+          builtinRules: new Map()
+          .set('foo-rule', {})
+          .set('old-rule', {meta: {deprecated: true}})
+          .set('bar-rule', {})
+          .set('baz-rule', {})
+        },
+      });
+      return ruleFinder(specifiedFileRelative, options);
+    };
 
-          const config = proxyquire(path.resolve(specifiedFileRelative), mock);
-          if (config) {
-            if (Array.isArray(config)) {
-              config.forEach(config => {
-                merge(mergedConfig, config);
-              });
-              return mergedConfig;
-            } else {
-              return merge(mergedConfig, config);
-            }
+const getRuleFinderForDedupeTests = isV8Eslint 
+  ? proxyquire('../../src/lib/rule-finder', {
+      eslint: {
+        Linter: class {
+          getRules() {
+            return new Map()
+              .set('foo-rule', {})
+              .set('bar-rule', {})
+              .set('plugin/duplicate-foo-rule', {})
+              .set('plugin/duplicate-bar-rule', {});
           }
         }
       },
-    },
-    'eslint/use-at-your-own-risk': {
-      builtinRules: new Map()
-      .set('foo-rule', {})
-      .set('old-rule', {meta: {deprecated: true}})
-      .set('bar-rule', {})
-      .set('baz-rule', {})
-    },
-  });
-  return ruleFinder(specifiedFileRelative, options);
-};
+      module: {
+        createRequire: (relative) => mockCreateRequire(
+          () => getRuleFinderForDedupeTests,
+          [
+            'eslint-plugin-plugin'
+          ],
+          relative
+        ),
+        '@global': true
+      },
+      ...mockForDedupeTests
+    })
+  : (specifiedFileRelative, options) => {
+    const config = specifiedFileRelative 
+      ? proxyquire(path.resolve(specifiedFileRelative), mockForDedupeTests)
+      : proxyquire(path.resolve(process.cwd(), require(path.join(process.cwd(), 'package.json')).main), mockForDedupeTests);
 
-const getRuleFinderForDedupeTests = (specifiedFileRelative, options) => {
-  const ruleFinder = proxyquire('../../src/lib/rule-finder', {
-    eslint: {
-      ESLint: class {
-        isPathIgnored() {
-          return false;
-        }
-        calculateConfigForFile(configFilePath) {
-          const mock = {
-            'eslint-plugin-plugin': {
-              rules: {
-                'duplicate-foo-rule': {},
-                'duplicate-bar-rule': {}
-              },
-              '@noCallThru': true,
-              '@global': true
+    const ruleFinder = proxyquire('../../src/lib/rule-finder', {
+        eslint: {
+          ESLint: class {
+            isPathIgnored(filePath) {
+              return filePath.includes('.ts') ? true : false;
             }
-          }
+            // eslint-disable-next-line no-unused-vars
+            calculateConfigForFile(filePath) {
+              const mergedConfig = {};
+              defaultConfig.forEach(config => {
+                merge(mergedConfig, config);
+              });
 
-          const mergedConfig = {};
-          defaultConfig.forEach(config => {
-            merge(mergedConfig, config);
-          });
+              if(!specifiedFileRelative) {
+                if (Array.isArray(config)) {
+                  config.forEach(config => {
+                    merge(mergedConfig, config);
+                  });
+                  return mergedConfig;
+                } else {
+                  return merge(mergedConfig, config);
+                }
+              }
 
-          if(!specifiedFileRelative) {
-            const config = proxyquire(path.resolve(process.cwd(), configFilePath), mock);
-            if (config) {
               if (Array.isArray(config)) {
                 config.forEach(config => {
                   merge(mergedConfig, config);
@@ -205,40 +295,26 @@ const getRuleFinderForDedupeTests = (specifiedFileRelative, options) => {
                 return merge(mergedConfig, config);
               }
             }
-          }
-
-          const config = proxyquire(path.resolve(specifiedFileRelative), mock);
-          if (config) {
-            if (Array.isArray(config)) {
-              config.forEach(config => {
-                merge(mergedConfig, config);
-              });
-              return mergedConfig;
-            } else {
-              return merge(mergedConfig, config);
-            }
-          }
-        }
-      },
-    },
-    'eslint/use-at-your-own-risk': {
-      builtinRules: new Map()
-      .set('foo-rule', {})
-      .set('bar-rule', {})
-      .set('plugin/duplicate-foo-rule', {})
-      .set('plugin/duplicate-bar-rule', {})
-    },
-  });
-  return ruleFinder(specifiedFileRelative, options);
-};
+          },
+        },
+        'eslint/use-at-your-own-risk': {
+          builtinRules: new Map()
+          .set('foo-rule', {})
+          .set('bar-rule', {})
+          .set('plugin/duplicate-foo-rule', {})
+          .set('plugin/duplicate-bar-rule', {})
+        },
+      });
+      return ruleFinder(specifiedFileRelative, options);
+    };
 
 const noSpecifiedFile = path.resolve(process.cwd(), `./test/fixtures/${eslintVersion}/no-path`);
-const specifiedFileRelative = `./test/fixtures/${eslintVersion}/eslint_json.js`;
+const specifiedFileRelative = `./test/fixtures/${eslintVersion}/${isV8Eslint ? 'eslint.json' : 'eslint_json.js'}`;
 const specifiedFileAbsolute = path.join(process.cwd(), specifiedFileRelative);
-const noRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-plugin-with-no-rules.js`);
-const noDuplicateRulesFiles = `./test/fixtures/${eslintVersion}/eslint-dedupe-plugin-rules.js`;
-const usingDeprecatedRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-deprecated-rules.js`);
-const usingWithOverridesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-overrides.js`);
+const noRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-plugin-with-no-rules.${isV8Eslint ? 'json' : 'js'}`);
+const noDuplicateRulesFiles = `./test/fixtures/${eslintVersion}/eslint-dedupe-plugin-rules.${isV8Eslint ? 'json' : 'js'}`;
+const usingDeprecatedRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-deprecated-rules.${isV8Eslint ? 'json' : 'js'}`);
+const usingWithOverridesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-overrides.${isV8Eslint ? 'json' : 'js'}`);
 
 describe('rule-finder', function() {
   // increase timeout because proxyquire adds a significant delay

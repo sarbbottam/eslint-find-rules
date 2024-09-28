@@ -1,11 +1,15 @@
 const path = require('path');
 
-const { ESLint } = require('eslint');
+const { ESLint, Linter } = require('eslint');
 const { builtinRules } = require('eslint/use-at-your-own-risk');
+const eslintPkg = require('eslint/package.json');
 const glob = require('glob');
-const isEqual = require('lodash/isEqual');
+const semver = require('semver');
 const difference = require('./array-diff');
 const getSortedRules = require('./sort-rules');
+const normalizePluginName = require('./normalize-plugin-name');
+
+const isV8Eslint = semver.satisfies(eslintPkg.version, '< 9');
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
@@ -19,29 +23,29 @@ function _getConfigFile(specifiedFile) {
 }
 
 async function _getConfigs(overrideConfigFile, files) {
-  const esLint = new ESLint({
+  const eslintOptions = { 
     // Point to the particular config
     overrideConfigFile
-  });
-
-  const flatConfig = files.map(async filePath => (
+  };
+  if (isV8Eslint) {
+    // Ignore any config applicable depending on the location on the filesystem
+    eslintOptions.useEslintrc = false;
+  }
+  const esLint = new ESLint(eslintOptions);
+  
+  const configs = files.map(async filePath => (
     await esLint.isPathIgnored(filePath) ? false : esLint.calculateConfigForFile(filePath)
   ));
-
-  const uniqueConfigs = [];
-  (await Promise.all(flatConfig)).forEach((config) => {
-    if (!config) return;
-    const isDuplicate = uniqueConfigs.some((existingConfig) => isEqual(existingConfig, config));
-    if (!isDuplicate) uniqueConfigs.push(config);
-  });
-  return uniqueConfigs;
+  return new Set((await Promise.all(configs)).filter(Boolean));
 }
 
 async function _getConfig(configFile, files) {
   return Array.from(await _getConfigs(configFile, files)).reduce((prev, item) => {
     return Object.assign(prev, item, {
       rules: Object.assign({}, prev.rules, item.rules),
-      plugins: Object.assign({}, prev.plugins, item.plugins),
+      plugins: isV8Eslint 
+        ? [...new Set([].concat(prev.plugins || [], item.plugins || []))]
+        : Object.assign({}, prev.plugins, item.plugins),
     });
   }, {});
 }
@@ -63,11 +67,15 @@ function _getPluginRules(config) {
   const plugins = config.plugins;
   /* istanbul ignore else */
   if (plugins) {
-    Object.keys(plugins).forEach(pluginName => {
-      const rules = plugins[pluginName].rules === undefined ? {} : plugins[pluginName].rules;
+    (isV8Eslint ? plugins : Object.keys(plugins)).forEach(plugin => {
+      const normalized = isV8Eslint ? normalizePluginName(plugin) : null;
+      const pluginConfig = normalized ? require(normalized.module) : null;
+      const rules = pluginConfig 
+        ? pluginConfig.rules === undefined ? {} : pluginConfig.rules
+        : plugins[plugin].rules === undefined ? {} : plugins[plugin].rules;
 
       Object.keys(rules).forEach(ruleName =>
-        pluginRules.set(`${pluginName}/${ruleName}`, rules[ruleName])
+        pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules[ruleName])
       );
     });
   }
@@ -75,7 +83,7 @@ function _getPluginRules(config) {
 }
 
 function _getCoreRules() {
-  return builtinRules;
+  return isV8Eslint ? new Linter().getRules() : builtinRules;
 }
 
 function _filterRuleNames(ruleNames, rules, predicate) {
@@ -95,7 +103,7 @@ function _createExtensionRegExp(extensions) {
     ext.startsWith('.') ? ext.slice(1) : ext
   ));
 
-  return new RegExp(`^(?!.*node_modules).*\\.(${normalizedExts.join("|")})$`);
+  return new RegExp(`.\\.(?:${normalizedExts.join("|")})$`);
 }
 
 function RuleFinder(config, {omitCore, includeDeprecated}) {

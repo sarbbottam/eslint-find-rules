@@ -1,0 +1,9 @@
+{
+  "extends": "./eslintrc",
+  "plugins": [
+    "plugin"
+  ],
+  "rules": {
+    "plugin/duplicate-bar-rule": [2]
+  }
+}

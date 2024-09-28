@@ -1,8 +1,8 @@
 const plugin = require('eslint-plugin-plugin');
 const scopeEslintPluginScopedPlugin = require('@scope/eslint-plugin-scoped-plugin');
-const scope = require('@scope');
+const scope = require('@scope/eslint-plugin');
 const scopeWithDashEslintPluginScopedWithDashPlugin = require('@scope-with-dash/eslint-plugin-scoped-with-dash-plugin');
-const scopeWithDash = require('@scope-with-dash');
+const scopeWithDash = require('@scope-with-dash/eslint-plugin');
 
 module.exports = {
   plugins: {
