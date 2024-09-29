@@ -5,7 +5,7 @@ const json = require('eslint-plugin-json');
 module.exports = [
   js.configs.recommended,
   {
-    ignores: ["node_modules/**", "coverage/**", ".nyc_output/**"]
+    ignores: ['node_modules/**', 'coverage/**', '.nyc_output/**', 'dist/**']
   },
   {
     languageOptions: {
@@ -20,11 +20,11 @@ module.exports = [
     },
   },
   {
-    files: ["**/*.json"],
-    ...json.configs["recommended"]
+    files: ['**/*.json'],
+    ...json.configs['recommended']
   },
   {
-    files: ["test/**/*.js"],
+    files: ['test/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.mocha,
