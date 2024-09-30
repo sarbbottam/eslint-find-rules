@@ -13,7 +13,7 @@ jobs:
         with:
           versionsAsRoot: true
           type: 'majors'
-          preset: '>=17'
+          preset: '>=10'
 
   majors:
     needs: [matrix]
@@ -27,6 +27,23 @@ jobs:
         eslint:
           - 8
           - 9
+        exclude:
+          - node-version: 15
+            eslint: 8
+          - node-version: 13
+            eslint: 8
+          - node-version: 11
+            eslint: 8
+          - node-version: 10
+            eslint: 8
+          - node-version: 15
+            eslint: 9
+          - node-version: 13
+            eslint: 9
+          - node-version: 11
+            eslint: 9
+          - node-version: 10
+            eslint: 9
 
     steps:
       - uses: actions/checkout@v2

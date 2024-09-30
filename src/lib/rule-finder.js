@@ -2,14 +2,10 @@ const path = require('path');
 
 const { ESLint, Linter } = require('eslint');
 const { builtinRules } = require('eslint/use-at-your-own-risk');
-const eslintPkg = require('eslint/package.json');
 const glob = require('glob');
-const semver = require('semver');
 const difference = require('./array-diff');
 const getSortedRules = require('./sort-rules');
 const normalizePluginName = require('./normalize-plugin-name');
-
-const isV8Eslint = semver.satisfies(eslintPkg.version, '< 9');
 
 function _getConfigFile(specifiedFile) {
   if (specifiedFile) {
@@ -27,7 +23,7 @@ async function _getConfigs(overrideConfigFile, files) {
     // Point to the particular config
     overrideConfigFile
   };
-  if (isV8Eslint) {
+  if (ESLint.configType === 'eslintrc') {
     // Ignore any config applicable depending on the location on the filesystem
     eslintOptions.useEslintrc = false;
   }
@@ -43,7 +39,7 @@ async function _getConfig(configFile, files) {
   return Array.from(await _getConfigs(configFile, files)).reduce((prev, item) => {
     return Object.assign(prev, item, {
       rules: Object.assign({}, prev.rules, item.rules),
-      plugins: isV8Eslint 
+      plugins: ESLint.configType === 'eslintrc'
         ? [...new Set([].concat(prev.plugins || [], item.plugins || []))]
         : Object.assign({}, prev.plugins, item.plugins),
     });
@@ -67,8 +63,8 @@ function _getPluginRules(config) {
   const plugins = config.plugins;
   /* istanbul ignore else */
   if (plugins) {
-    (isV8Eslint ? plugins : Object.keys(plugins)).forEach(plugin => {
-      const normalized = isV8Eslint ? normalizePluginName(plugin) : null;
+    (ESLint.configType === 'eslintrc' ? plugins : Object.keys(plugins)).forEach(plugin => {
+      const normalized = ESLint.configType === 'eslintrc' ? normalizePluginName(plugin) : null;
       const pluginConfig = normalized ? require(normalized.module) : null;
       const rules = pluginConfig 
         ? pluginConfig.rules === undefined ? {} : pluginConfig.rules
@@ -83,7 +79,7 @@ function _getPluginRules(config) {
 }
 
 function _getCoreRules() {
-  return isV8Eslint ? new Linter().getRules() : builtinRules;
+  return ESLint.configType === 'eslintrc' ? new Linter().getRules() : builtinRules;
 }
 
 function _filterRuleNames(ruleNames, rules, predicate) {
@@ -147,7 +143,7 @@ function RuleFinder(config, {omitCore, includeDeprecated}) {
 async function createRuleFinder(specifiedFile, options) {
   const configFile = _getConfigFile(specifiedFile);
 
-  const {ext = ['.js']} = options;
+  const {ext = ['.js', '.cjs', '.mjs']} = options;
   const extensionRegExp = _createExtensionRegExp(ext);
   const files = glob.sync(`**/*`, {dot: true, matchBase: true})
     .filter(file => extensionRegExp.test(file));

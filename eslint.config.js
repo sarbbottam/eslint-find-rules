@@ -5,6 +5,9 @@ const json = require('eslint-plugin-json');
 module.exports = [
   js.configs.recommended,
   {
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+  },
+  {
     ignores: ['node_modules/**', 'coverage/**', '.nyc_output/**', 'dist/**']
   },
   {
