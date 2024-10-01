@@ -36,6 +36,12 @@ jobs:
             eslint: 8
           - node-version: 10
             eslint: 8
+          - node-version: 19
+            eslint: 9  
+          - node-version: 17
+            eslint: 9  
+          - node-version: 16
+            eslint: 9  
           - node-version: 15
             eslint: 9  
           - node-version: 14
