@@ -66,9 +66,7 @@ function _getPluginRules(config) {
     (ESLint.configType === 'eslintrc' ? plugins : Object.keys(plugins)).forEach(plugin => {
       const normalized = ESLint.configType === 'eslintrc' ? normalizePluginName(plugin) : null;
       const pluginConfig = normalized ? require(normalized.module) : null;
-      const rules = pluginConfig 
-        ? pluginConfig.rules === undefined ? {} : pluginConfig.rules
-        : plugins[plugin].rules === undefined ? {} : plugins[plugin].rules;
+      const rules = pluginConfig ? pluginConfig.rules : plugins[plugin].rules;
 
       Object.keys(rules).forEach(ruleName =>
         pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules?.[ruleName])
