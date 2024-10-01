@@ -68,9 +68,11 @@ function _getPluginRules(config) {
       const pluginConfig = normalized ? require(normalized.module) : null;
       const rules = pluginConfig ? pluginConfig.rules : plugins[plugin].rules;
 
-      Object.keys(rules).forEach(ruleName =>
-        pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules?.[ruleName])
-      );
+      if (rules) {
+        Object.keys(rules).forEach(ruleName =>
+          pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules[ruleName])
+        );
+      }
     });
   }
   return pluginRules;
