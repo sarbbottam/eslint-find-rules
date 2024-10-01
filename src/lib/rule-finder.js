@@ -71,7 +71,7 @@ function _getPluginRules(config) {
         : plugins[plugin].rules === undefined ? {} : plugins[plugin].rules;
 
       Object.keys(rules).forEach(ruleName =>
-        pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules[ruleName])
+        pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules?.[ruleName])
       );
     });
   }
