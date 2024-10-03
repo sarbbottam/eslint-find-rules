@@ -1,6 +1,7 @@
 const path = require('path');
 
 const { ESLint, Linter } = require('eslint');
+const { builtinRules } = require('eslint/use-at-your-own-risk');
 const glob = require('glob');
 const difference = require('./array-diff');
 const getSortedRules = require('./sort-rules');
@@ -18,13 +19,16 @@ function _getConfigFile(specifiedFile) {
 }
 
 async function _getConfigs(overrideConfigFile, files) {
-  const esLint = new ESLint({
-    // Ignore any config applicable depending on the location on the filesystem
-    useEslintrc: false,
+  const eslintOptions = { 
     // Point to the particular config
     overrideConfigFile
-  });
-
+  };
+  if (ESLint.configType === 'eslintrc') {
+    // Ignore any config applicable depending on the location on the filesystem
+    eslintOptions.useEslintrc = false;
+  }
+  const esLint = new ESLint(eslintOptions);
+  
   const configs = files.map(async filePath => (
     await esLint.isPathIgnored(filePath) ? false : esLint.calculateConfigForFile(filePath)
   ));
@@ -35,7 +39,9 @@ async function _getConfig(configFile, files) {
   return Array.from(await _getConfigs(configFile, files)).reduce((prev, item) => {
     return Object.assign(prev, item, {
       rules: Object.assign({}, prev.rules, item.rules),
-      plugins: [...new Set([].concat(prev.plugins || [], item.plugins || []))]
+      plugins: ESLint.configType === 'eslintrc'
+        ? [...new Set([].concat(prev.plugins || [], item.plugins || []))]
+        : Object.assign({}, prev.plugins, item.plugins),
     });
   }, {});
 }
@@ -57,21 +63,23 @@ function _getPluginRules(config) {
   const plugins = config.plugins;
   /* istanbul ignore else */
   if (plugins) {
-    plugins.forEach(plugin => {
-      const normalized = normalizePluginName(plugin);
-      const pluginConfig = require(normalized.module);
-      const rules = pluginConfig.rules === undefined ? {} : pluginConfig.rules;
+    (ESLint.configType === 'eslintrc' ? plugins : Object.keys(plugins)).forEach(plugin => {
+      const normalized = ESLint.configType === 'eslintrc' ? normalizePluginName(plugin) : null;
+      const pluginConfig = normalized ? require(normalized.module) : null;
+      const rules = pluginConfig ? pluginConfig.rules : plugins[plugin].rules;
 
-      Object.keys(rules).forEach(ruleName =>
-        pluginRules.set(`${normalized.prefix}/${ruleName}`, rules[ruleName])
-      );
+      if (rules) {
+        Object.keys(rules).forEach(ruleName =>
+          pluginRules.set(`${normalized ? normalized.prefix : plugin}/${ruleName}`, rules[ruleName])
+        );
+      }
     });
   }
   return pluginRules;
 }
 
 function _getCoreRules() {
-  return new Linter().getRules();
+  return ESLint.configType === 'eslintrc' ? new Linter().getRules() : builtinRules;
 }
 
 function _filterRuleNames(ruleNames, rules, predicate) {
@@ -135,7 +143,7 @@ function RuleFinder(config, {omitCore, includeDeprecated}) {
 async function createRuleFinder(specifiedFile, options) {
   const configFile = _getConfigFile(specifiedFile);
 
-  const {ext = ['.js']} = options;
+  const {ext = ['.js', '.cjs', '.mjs']} = options;
   const extensionRegExp = _createExtensionRegExp(ext);
   const files = glob.sync(`**/*`, {dot: true, matchBase: true})
     .filter(file => extensionRegExp.test(file));

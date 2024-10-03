@@ -6,5 +6,6 @@
       },
       "exclude": ["transform-regenerator"]
     }]
-  ]
+  ],
+  "plugins": ["transform-object-rest-spread"]
 }
