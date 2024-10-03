@@ -4,11 +4,11 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const { builtinRules } = require('eslint/use-at-your-own-risk');
 const semver = require('semver');
-const eslintPkg = require('eslint/package.json');
 const merge = require('lodash.merge');
+const { ESLint } = require('eslint');
 
 const processCwd = process.cwd;
-const isV8Eslint = semver.satisfies(eslintPkg.version, '< 9');
+const isV8Eslint = ESLint.configType === 'eslintrc';
 const eslintVersion = isV8Eslint ? 'prior-v8' : 'post-v8';
 
 const mockCreateRequire = (getExport, plugins, relative) => {
