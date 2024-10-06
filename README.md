@@ -130,6 +130,13 @@ ruleFinder.getDeprecatedRules()
 }
 ```
 
+### ESLint v9 support
+By default `eslint-find-rules` uses **Legacy** mode to retrieve the rules with the specified config file. If you want to find rules with a flat config, which is the new default mode in ESLint v9, you need to add the `--flatConfig` flag when running the command.
+
+You'll probably also need to add `--ext .js, .cjs, .mjs` if you're working with one of the new Javascript filename extensions in your project.
+
+<u>**Note:**</u> ESLint v9 support requires a recent version of Node.JS: `^18.18.0 || ^20.9.0 || >=21.1.0`, as mentionned in the [ESLint documentation](https://eslint.org/docs/latest/use/migrate-to-9.0.0#-nodejs--v1818-v19-are-no-longer-supported).
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
