@@ -1,4 +1,9 @@
 {
+  "ignorePatterns": [
+    "node_modules/",
+    "coverage/",
+    ".nyc_output/"
+  ],
   "env": {
     "commonjs": true,
     "es6": true,
