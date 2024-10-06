@@ -50,7 +50,7 @@ jobs:
           skip-ls-check: true
       - run: npm install --no-save eslint@${{ matrix.eslint }}
       - run: npm install --no-save @eslint/eslintrc@0
-        if: ${{ matrix.eslint != 8 }}
+        if: ${{ matrix.eslint < 8 }}
       - run: npm prune > /dev/null
       - run: npm ls > /dev/null
       - run: npm run cover
