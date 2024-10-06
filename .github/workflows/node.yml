@@ -25,6 +25,7 @@ jobs:
       matrix:
         node-version: ${{ fromJson(needs.matrix.outputs.majors) }}
         eslint:
+          - 9
           - 8
           - 7
         include:

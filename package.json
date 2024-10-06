@@ -9,7 +9,7 @@
   },
   "scripts": {
     "cover": "nyc --reporter=lcov --reporter=text --reporter=html npm run tests-only",
-    "lint": "eslint --ext .js,.json .",
+    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.json .",
     "pretest": "npm run lint",
     "tests-only": "mocha --recursive",
     "test": "npm run tests-only",
@@ -49,8 +49,9 @@
     "codecov": "^2.3.1",
     "commitizen": "^2.10.1",
     "create-require": "^1.1.1",
+    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^2.1.0",
-    "eslint": "^7 || ^8.2.0",
+    "eslint": "^7 || ^8.2.0 || ^9",
     "eslint-plugin-json": "^3.1.0",
     "ghooks": "^2.0.4",
     "in-publish": "^2.0.1",
@@ -65,7 +66,7 @@
     "validate-commit-msg": "^2.14.0"
   },
   "peerDependencies": {
-    "eslint": "^7 || ^8.2.0"
+    "eslint": "^7 || ^8.2.0 || ^9"
   },
   "nyc": {
     "exclude": [

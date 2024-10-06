@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { ESLint, Linter } = require('eslint');
+let { ESLint, Linter } = require('eslint');
 const glob = require('glob');
 const difference = require('./array-diff');
 const getSortedRules = require('./sort-rules');
@@ -11,6 +11,9 @@ try {
   const eslintInternal = require('eslint/use-at-your-own-risk');
   builtinRules = eslintInternal.builtinRules;
   FlatESLint = eslintInternal.FlatESLint;
+  if (eslintInternal.LegacyESLint) {
+    ESLint = eslintInternal.LegacyESLint;
+  }
 } catch (e) {}
 
 function _loadEslint(options, useFlatConfig) {
