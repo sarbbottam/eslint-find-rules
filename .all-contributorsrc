@@ -110,6 +110,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "lotmek",
+      "name": "Lotfi Meklati",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55419526?v=4",
+      "profile": "https://github.com/lotmek",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "repoType": "github"
