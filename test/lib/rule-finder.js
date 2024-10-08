@@ -2,14 +2,10 @@ const path = require('path');
 const createRequire = require('create-require');
 const assert = require('assert');
 const proxyquire = require('proxyquire');
-const { builtinRules } = require('eslint/use-at-your-own-risk');
+
 const semver = require('semver');
-const merge = require('lodash.merge');
-const { ESLint } = require('eslint');
 
 const processCwd = process.cwd;
-const isV8Eslint = ESLint.configType === 'eslintrc';
-const eslintVersion = isV8Eslint ? 'prior-v8' : 'post-v8';
 
 const mockCreateRequire = (getExport, plugins, relative) => {
   // Use the mocked require.
@@ -53,25 +49,21 @@ const getRuleFinder = proxyquire('../../src/lib/rule-finder', {
     },
     '@global': true
   },
-  {
-      ignores: [
-          "**/node_modules/",
-          ".git/"
-      ]
+  module: {
+    createRequire: (relative) => mockCreateRequire(
+      () => getRuleFinder,
+      [
+        'eslint-plugin-plugin',
+        'eslint-plugin-no-rules',
+        '@scope/eslint-plugin-scoped-plugin',
+        '@scope/eslint-plugin',
+        '@scope-with-dash/eslint-plugin-scoped-with-dash-plugin',
+        '@scope-with-dash/eslint-plugin'
+      ],
+      relative
+    ),
+    '@global': true
   },
-  {
-      files: ["**/*.js", "**/*.mjs"]
-  },
-  {
-      files: ["**/*.cjs"],
-      languageOptions: {
-          sourceType: "commonjs",
-          ecmaVersion: "latest"
-      }
-  }
-];
-
-const mock = {
   'eslint-plugin-plugin': {
     rules: {
       'foo-rule': {},
@@ -123,7 +115,7 @@ const mock = {
     '@noCallThru': true,
     '@global': true
   }
-};
+});
 
 const mockedDedupedBuiltinRules = new Map()
   .set('foo-rule', {})
@@ -166,193 +158,17 @@ const getRuleFinderForDedupeTests = proxyquire('../../src/lib/rule-finder', {
     '@noCallThru': true,
     '@global': true
   }
-};
-
-const getRuleFinder = isV8Eslint 
-  ? proxyquire('../../src/lib/rule-finder', {
-      eslint: {
-        Linter: class {
-          getRules() {
-            return new Map()
-              .set('foo-rule', {})
-              .set('old-rule', {meta: {deprecated: true}})
-              .set('bar-rule', {})
-              .set('baz-rule', {});
-          }
-        }
-      },
-      module: {
-        createRequire: (relative) => mockCreateRequire(
-          () => getRuleFinder,
-          [
-            'eslint-plugin-plugin',
-            'eslint-plugin-no-rules',
-            '@scope/eslint-plugin-scoped-plugin',
-            '@scope/eslint-plugin',
-            '@scope-with-dash/eslint-plugin-scoped-with-dash-plugin',
-            '@scope-with-dash/eslint-plugin'
-          ],
-          relative
-        ),
-        '@global': true
-      },
-      ...mock
-    })
-  : (specifiedFileRelative, options) => {
-      const config = specifiedFileRelative 
-        ? proxyquire(path.resolve(specifiedFileRelative), mock)
-        : proxyquire(path.resolve(process.cwd(), require(path.join(process.cwd(), 'package.json')).main), mock);
-      
-      const ruleFinder = proxyquire('../../src/lib/rule-finder', {
-        eslint: {
-          // for v9 ESLint
-          ESLint: class {
-            // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
-            //  or else you will get an error that the rule does not exist in ESLint
-            isPathIgnored(filePath) {
-              return filePath.includes('.ts') ? true : false;
-            }
-            // Mock to validate with rules that are not in ESLint Mock to validate with rules that are not in ESLint, 
-            //  or else you will get an error that the rule does not exist in ESLint
-            // eslint-disable-next-line no-unused-vars
-            calculateConfigForFile(filePath) {
-              const mergedConfig = {};
-              defaultConfig.forEach(config => {
-                merge(mergedConfig, config);
-              });
-
-              if(!specifiedFileRelative) {
-                if (Array.isArray(config)) {
-                  config.forEach(config => {
-                    merge(mergedConfig, config);
-                  });
-                  return mergedConfig;
-                } else {
-                  return merge(mergedConfig, config);
-                }
-              }
-
-              if (Array.isArray(config)) {
-                config.forEach(config => {
-                  merge(mergedConfig, config);
-                });
-                return mergedConfig;
-              } else {
-                return merge(mergedConfig, config);
-              }
-            }
-          },
-        },
-        'eslint/use-at-your-own-risk': {
-          builtinRules: new Map()
-          .set('foo-rule', {})
-          .set('old-rule', {meta: {deprecated: true}})
-          .set('bar-rule', {})
-          .set('baz-rule', {})
-        },
-      });
-      return ruleFinder(specifiedFileRelative, options);
-    };
-
-const getRuleFinderForDedupeTests = isV8Eslint 
-  ? proxyquire('../../src/lib/rule-finder', {
-      eslint: {
-        Linter: class {
-          getRules() {
-            return new Map()
-              .set('foo-rule', {})
-              .set('bar-rule', {})
-              .set('plugin/duplicate-foo-rule', {})
-              .set('plugin/duplicate-bar-rule', {});
-          }
-        }
-      },
-      module: {
-        createRequire: (relative) => mockCreateRequire(
-          () => getRuleFinderForDedupeTests,
-          [
-            'eslint-plugin-plugin'
-          ],
-          relative
-        ),
-        '@global': true
-      },
-      ...mockForDedupeTests
-    })
-  : (specifiedFileRelative, options) => {
-    const config = specifiedFileRelative 
-      ? proxyquire(path.resolve(specifiedFileRelative), mockForDedupeTests)
-      : proxyquire(path.resolve(process.cwd(), require(path.join(process.cwd(), 'package.json')).main), mockForDedupeTests);
-
-    const ruleFinder = proxyquire('../../src/lib/rule-finder', {
-        eslint: {
-          ESLint: class {
-            isPathIgnored(filePath) {
-              return filePath.includes('.ts') ? true : false;
-            }
-            // eslint-disable-next-line no-unused-vars
-            calculateConfigForFile(filePath) {
-              const mergedConfig = {};
-              defaultConfig.forEach(config => {
-                merge(mergedConfig, config);
-              });
-
-              if(!specifiedFileRelative) {
-                if (Array.isArray(config)) {
-                  config.forEach(config => {
-                    merge(mergedConfig, config);
-                  });
-                  return mergedConfig;
-                } else {
-                  return merge(mergedConfig, config);
-                }
-              }
-
-              if (Array.isArray(config)) {
-                config.forEach(config => {
-                  merge(mergedConfig, config);
-                });
-                return mergedConfig;
-              } else {
-                return merge(mergedConfig, config);
-              }
-            }
-          },
-        },
-        'eslint/use-at-your-own-risk': {
-          builtinRules: new Map()
-          .set('foo-rule', {})
-          .set('bar-rule', {})
-          .set('plugin/duplicate-foo-rule', {})
-          .set('plugin/duplicate-bar-rule', {})
-        },
-      });
-      return ruleFinder(specifiedFileRelative, options);
-    };
-
-const getRuleFinderNoFlatSupport = proxyquire('../../src/lib/rule-finder', {
-  eslint: {
-    Linter: class {
-      getRules() {
-        return mockedBuiltinRules
-      }
-    },
-  },
-  'eslint/use-at-your-own-risk': {
-    FlatESLint: undefined
-  }
 });
 
-const noSpecifiedFile = path.resolve(process.cwd(), `./test/fixtures/${eslintVersion}/no-path`);
-const specifiedFileRelative = `./test/fixtures/${eslintVersion}/${isV8Eslint ? 'eslint.json' : 'eslint_json.js'}`;
+const noSpecifiedFile = path.resolve(process.cwd(), `./test/fixtures/prior-v8/no-path`);
+const specifiedFileRelative = `./test/fixtures/prior-v8/eslint.json`;
 const specifiedFileAbsolute = path.join(process.cwd(), specifiedFileRelative);
-const noRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-plugin-with-no-rules.json`);
-const noDuplicateRulesFiles = `./test/fixtures/${eslintVersion}/eslint-dedupe-plugin-rules.json`;
-const usingDeprecatedRulesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-deprecated-rules.json`);
-const usingWithOverridesFile = path.join(process.cwd(), `./test/fixtures/${eslintVersion}/eslint-with-overrides.json`);
-const specifiedFlatConfigFileRelative = `./test/fixtures/post-v8/eslint-flat-config.js`;
+const noRulesFile = path.join(process.cwd(), `./test/fixtures/prior-v8/eslint-with-plugin-with-no-rules.json`);
+const noDuplicateRulesFiles = `./test/fixtures/prior-v8/eslint-dedupe-plugin-rules.json`;
+const usingDeprecatedRulesFile = path.join(process.cwd(), `./test/fixtures/prior-v8/eslint-with-deprecated-rules.json`);
+const usingWithOverridesFile = path.join(process.cwd(), `./test/fixtures/prior-v8/eslint-with-overrides.json`);
 
-describe('rule-finder', function() {
+describe('rule-finder (legacy)', function() {
   // increase timeout because proxyquire adds a significant delay
   this.timeout(semver.satisfies(process.version, '> 10') ? 5e3 : (semver.satisfies(process.version, '> 4') ? 20e3 : 30e3));
 
@@ -830,121 +646,5 @@ describe('rule-finder', function() {
       "plugin/baz-rule",
       "plugin/foo-rule",
     ]);
-  });
-
-  it('flat config - should throw an exception if FlatESLint is not defined', async () => {
-    try {
-      await getRuleFinderNoFlatSupport(specifiedFlatConfigFileRelative, {useFlatConfig: true})
-      assert.fail('Expected an error to be thrown');
-    } catch (error) {
-      assert.strictEqual(error, 'This version of ESLint does not support flat config.')
-    }
-  });
-
-  (semver.satisfies(eslintPkg.version, '>= 8') ? describe : describe.skip)('flat config - supported', () => {
-    it('specifiedFile (relative path) - unused rules', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getUnusedRules(), [
-        'bar-rule',
-        'baz-rule',
-        'plugin/bar-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - unused rules including deprecated', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {includeDeprecated: true, useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getUnusedRules(), [
-        'bar-rule',
-        'baz-rule',
-        'old-rule',
-        'plugin/bar-rule',
-        'plugin/old-plugin-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - current rules', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getCurrentRules(), [
-        'foo-rule',
-        'plugin/foo-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - current rules with ext', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, { ext: ['.json'], useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getCurrentRules(), [
-        'jsonPlugin/foo-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - current rules with ext without dot', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, { ext: ['json'], useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getCurrentRules(), [
-        'jsonPlugin/foo-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - current rules with ext not found', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, { ext: ['.ts'], useFlatConfig: true });
-      assert.deepEqual(ruleFinder.getCurrentRules(), []);
-    });
-
-    it('specifiedFile (relative path) - plugin rules', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, { useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getPluginRules(), [
-        'plugin/bar-rule',
-        'plugin/foo-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - plugin rules including deprecated', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {includeDeprecated: true, useFlatConfig: true});
-      assert.deepEqual(ruleFinder.getPluginRules(), [
-        'plugin/bar-rule',
-        'plugin/foo-rule',
-        'plugin/old-plugin-rule'
-      ]);
-    });
-
-    it('specifiedFile (relative path) - all available rules', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, { useFlatConfig: true });
-      assert.deepEqual(
-        ruleFinder.getAllAvailableRules(),
-        [
-          'bar-rule',
-          'baz-rule',
-          'foo-rule',
-          'plugin/bar-rule',
-          'plugin/foo-rule'
-        ]
-      );
-    });
-
-    it('specifiedFile (relative path) - all available rules without core', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {omitCore: true, useFlatConfig: true});
-      assert.deepEqual(
-        ruleFinder.getAllAvailableRules(),
-        [
-          'plugin/bar-rule',
-          'plugin/foo-rule'
-        ]
-      );
-    });
-
-    it('specifiedFile (relative path) - all available rules including deprecated', async () => {
-      const ruleFinder = await getRuleFinder(specifiedFlatConfigFileRelative, {includeDeprecated: true, useFlatConfig: true});
-      assert.deepEqual(
-        ruleFinder.getAllAvailableRules(),
-        [
-          'bar-rule',
-          'baz-rule',
-          'foo-rule',
-          'old-rule',
-          'plugin/bar-rule',
-          'plugin/foo-rule',
-          'plugin/old-plugin-rule'
-        ]
-      );
-    });
   });
 });
