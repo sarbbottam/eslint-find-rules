@@ -14,6 +14,7 @@ function compare(diff, a, b) {
     if (!diff[n]) {
       try {
         assert.deepEqual(a[n], b[n]);
+      // eslint-disable-next-line no-unused-vars
       } catch (err) {
         diff[n] = {
           config1: a[n],

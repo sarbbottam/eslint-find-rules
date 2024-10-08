@@ -14,7 +14,7 @@ try {
   if (eslintInternal.LegacyESLint) {
     ESLint = eslintInternal.LegacyESLint;
   }
-} catch (e) {}
+} catch (_e) {}
 
 function _loadEslint(options, useFlatConfig) {
   if (!useFlatConfig) {
@@ -170,7 +170,7 @@ function RuleFinder(config, {omitCore, includeDeprecated, useFlatConfig}) {
 async function createRuleFinder(specifiedFile, options) {
   const configFile = _getConfigFile(specifiedFile);
 
-  const {ext = ['.js']} = options;
+  const {ext = ['.js', '.cjs', '.mjs']} = options;
   const extensionRegExp = _createExtensionRegExp(ext);
   const files = glob.sync(`**/*`, {dot: true, matchBase: true})
     .filter(file => extensionRegExp.test(file));

@@ -53,6 +53,7 @@ function _getNormalizer() {
 
         return eslintNaming;
       }
+    // eslint-disable-next-line no-unused-vars, no-empty
     } catch (err) {
     }
   }

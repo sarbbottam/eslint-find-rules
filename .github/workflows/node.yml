@@ -27,10 +27,7 @@ jobs:
         eslint:
           - 9
           - 8
-          - 7
-        include:
-          - node-version: 14
-            eslint: 7.7
+          - 9
         exclude:
           - node-version: 15
             eslint: 8
@@ -53,11 +50,12 @@ jobs:
           - node-version: 13
             eslint: 9
           - node-version: 12
-            eslint: 9 
+            eslint: 9
           - node-version: 11
-            eslint: 9 
+            eslint: 9
           - node-version: 10
-            eslint: 9 
+            eslint: 9
+
     steps:
       - uses: actions/checkout@v2
       - uses: ljharb/actions/node/install@main
