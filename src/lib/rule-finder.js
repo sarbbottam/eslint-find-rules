@@ -14,7 +14,7 @@ try {
   if (eslintInternal.LegacyESLint) {
     ESLint = eslintInternal.LegacyESLint;
   }
-} catch (_e) {}
+} catch (_e) { /* empty */ }
 
 function _loadEslint(options, useFlatConfig) {
   if (!useFlatConfig) {
