@@ -1,11 +1,21 @@
 const globals = require('globals');
-const js = require('@eslint/js')
+const js = require('@eslint/js');
 const json = require('eslint-plugin-json');
 
 module.exports = [
   js.configs.recommended,
   {
-    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
   {
     ignores: ['node_modules/**', 'coverage/**', '.nyc_output/**', 'dist/**']
@@ -32,6 +42,6 @@ module.exports = [
       globals: {
         ...globals.mocha,
       },
-    }
-  }
+    },
+  },
 ];
