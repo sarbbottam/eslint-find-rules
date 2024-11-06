@@ -49,9 +49,9 @@ const errorOut = argv.error && !argv.n;
 let processExitCode = 0;
 
 if (!argv.c && !argv.p && !argv.a && !argv.u && !argv.d) {
-  console.log('no option provided, please provide a valid option'); // eslint-disable-line no-console
-  console.log('usage:'); // eslint-disable-line no-console
-  console.log('eslint-find-rules [option] <file> [flag]'); // eslint-disable-line no-console
+  console.log('no option provided, please provide a valid option');
+  console.log('usage:');
+  console.log('eslint-find-rules [option] <file> [flag]');
 } else {
   Object.keys(options).forEach(option => {
     let rules;

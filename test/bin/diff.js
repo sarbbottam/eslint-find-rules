@@ -2,7 +2,7 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const consoleLog = console.log; // eslint-disable-line no-console
+const consoleLog = console.log;
 const processExit = process.exit;
 
 const stub = {
@@ -33,7 +33,7 @@ describe('diff', () => {
   });
 
   afterEach(() => {
-    console.log.restore(); // eslint-disable-line no-console
+    console.log.restore();
     process.exit = processExit;
     // purge yargs cache
     delete require.cache[require.resolve('yargs')];
@@ -45,7 +45,7 @@ describe('diff', () => {
     proxyquire('../../src/bin/diff', stub);
     assert.strictEqual(await exitStatus, 0);
     assert.ok(
-      console.log.calledWith( // eslint-disable-line no-console
+      console.log.calledWith(
         sinon.match(
           /diff rules[^]*in foo but not in bar:[^]*diff[^]*in bar but not in foo:[^]*diff/
         )
@@ -60,7 +60,7 @@ describe('diff', () => {
     proxyquire('../../src/bin/diff', stub);
     assert.strictEqual(await exitStatus, 0);
     assert.ok(
-      console.log.calledWith( // eslint-disable-line no-console
+      console.log.calledWith(
         sinon.match(
           /diff rules[^]*foo[^]*bar[^]*test-rule[^]*foo-config[^]*bar-config/
         )

@@ -132,7 +132,7 @@ function RuleFinder(config, {omitCore, includeDeprecated, useFlatConfig}) {
     currentRuleNames = currentRuleNames.filter(_isNotCore);
   }
 
-  const pluginRules = _getPluginRules(config, useFlatConfig); // eslint-disable-line vars-on-top
+  const pluginRules = _getPluginRules(config, useFlatConfig);
   const coreRules = _getCoreRules();
   const allRules = omitCore ? pluginRules : new Map([...coreRules, ...pluginRules]);
 

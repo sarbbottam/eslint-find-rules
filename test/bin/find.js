@@ -2,7 +2,7 @@ const assert = require('assert');
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const consoleLog = console.log; // eslint-disable-line no-console
+const consoleLog = console.log;
 const processExit = process.exit;
 
 const getCurrentRules = sinon.stub().returns(['current', 'rules']);
@@ -28,7 +28,7 @@ describe('bin', () => {
       }
     };
 
-    console.log = (...args) => { // eslint-disable-line no-console
+    console.log = (...args) => {
       if (args[0].match(/(current|plugin|all-available|unused|deprecated|rules found)/)) {
         return;
       }
@@ -41,7 +41,7 @@ describe('bin', () => {
   });
 
   afterEach(() => {
-    console.log = consoleLog; // eslint-disable-line no-console
+    console.log = consoleLog;
     process.exit = processExit;
     // Purge yargs cache
     delete require.cache[require.resolve('yargs')];
@@ -49,7 +49,7 @@ describe('bin', () => {
 
   it('no option', async () => {
     let callCount = 0;
-    console.log = (...args) => { // eslint-disable-line no-console
+    console.log = (...args) => {
       callCount += 1;
       if (args[0].match(
         /(no option provided, please provide a valid option|usage:|eslint-find-rules \[option] <file> \[flag])/)
@@ -60,7 +60,7 @@ describe('bin', () => {
     };
     proxyquire('../../src/bin/find', stub);
     assert.strictEqual(await exitStatus, 0);
-    assert.equal(callCount, 3); // eslint-disable-line no-console
+    assert.equal(callCount, 3);
   });
 
   it('option -c|--current', async () => {

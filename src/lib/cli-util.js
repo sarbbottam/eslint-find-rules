@@ -33,7 +33,7 @@ function push(output, columns, uniformColWidths) {
 
 function write(logger) {
   const _logger = logger || console;
-  const _log = _logger.log || /* istanbul ignore next */ console.log; // eslint-disable-line no-console
+  const _log = _logger.log || /* istanbul ignore next */ console.log;
   const output = ui.toString();
 
   // Only log when there is something to show
