@@ -8,5 +8,10 @@
     "ecmaVersion": 2018
   },
   "plugins": ["json"],
-  "root": true
+  "root": true,
+  "ignorePatterns": [
+    "node_modules/",
+    "coverage/",
+    ".nyc_output/",
+  ],
 }
